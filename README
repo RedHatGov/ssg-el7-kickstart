@@ -46,8 +46,6 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 
 	isolinux/
 
-		grub.conf - Menu Configuration for Kickstart
-
 		isolinux.cfg - Menu Configuration for Kickstart
 
 	stig-fix/
