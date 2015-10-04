@@ -97,19 +97,19 @@ if [[ $? -eq 0 ]]; then
 		echo "ERROR: Image is not RHEL"
 		exit 1
 	fi
+	# Set RHEL Version in ISO Linux
+	sed -i "s/7.X/$RHEL_VERSION/g" config/isolinux/isolinux.cfg
 	echo -n "Copying RHEL DVD Image..."
 	cp -a /rhel/* $DIR/rhel-dvd/
 	cp -a /rhel/.discinfo $DIR/rhel-dvd/
 	echo " Done."
 	umount /rhel
 	rm -rf /rhel
+	sed -i "s/$RHEL_VERSION/7.X/g" config/isolinux/isolinux.cfg
 else
 	echo "ERROR: ISO image is not bootable."
 	exit 1
 fi
-
-# Set RHEL Version in ISO Linux
-sed -i "s/7.X/$RHEL_VERSION/g" $DIR/rhel-dvd/isolinux/isolinux.cfg
 
 echo -n "Modifying RHEL DVD Image..."
 cp -a $DIR/config/* $DIR/rhel-dvd/
