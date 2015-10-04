@@ -109,7 +109,7 @@ else
 fi
 
 # Set RHEL Version in ISO Linux
-sed -i "s/7.X/$RHEL_VERSION/g" $DIR/rhel-dvd/config/isolinux/isolinux.cfg
+sed -i "s/7.X/$RHEL_VERSION/g" $DIR/rhel-dvd/isolinux/isolinux.cfg
 
 echo -n "Modifying RHEL DVD Image..."
 cp -a $DIR/config/* $DIR/rhel-dvd/
