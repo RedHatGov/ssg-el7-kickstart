@@ -21,14 +21,14 @@ auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_un
 auth sufficient pam_unix.so try_first_pass
 auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
 auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth requisite pam_succeed_if.so uid >= 500 quiet
+auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
 account required pam_faillock.so
 account required pam_unix.so
 account required pam_lastlog.so inactive=35
 account sufficient pam_localuser.so
-account sufficient pam_succeed_if.so uid < 500 quiet
+account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
@@ -52,14 +52,14 @@ auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_un
 auth sufficient pam_unix.so try_first_pass
 auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
 auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth requisite pam_succeed_if.so uid >= 500 quiet
+auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
 account required pam_faillock.so
 account required pam_unix.so
 account required pam_lastlog.so inactive=35
 account sufficient pam_localuser.so
-account sufficient pam_succeed_if.so uid < 500 quiet
+account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
@@ -84,7 +84,7 @@ auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_un
 auth sufficient pam_unix.so try_first_pass
 auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
 auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth requisite pam_succeed_if.so uid >= 500 quiet
+auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 auth optional pam_gnome_keyring.so
 
@@ -92,7 +92,7 @@ account required pam_faillock.so
 account required pam_unix.so
 account required pam_lastlog.so
 account sufficient pam_localuser.so
-account sufficient pam_succeed_if.so uid < 500 quiet
+account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
@@ -254,70 +254,70 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -w /var/log/wtmp -p wa -k session
 
 #2.6.2.4.7 Ensure auditd Collects Discretionary Access Control Permission Modification Events
--a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
 
 #2.6.2.4.8 Ensure auditd Collects Unauthorized Access Attempts to Files (unsuccessful)
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
--a always,exit -F path=/bin/ping -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/umount -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/mount -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/su -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/chgrp -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/ping6 -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/unix_chkpwd -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/pwck -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/suexec -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/useradd -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/userdel -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/newusers -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupadd -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupdel -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupmod -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/semangae -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/usernetctl -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/ccreds_validate -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/userhelper -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/Xorg -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rlogin -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/at -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rsh -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/kgrantpty -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/staprun -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rcp -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/newrole -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/ping -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/umount -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/mount -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/chgrp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/bin/ping6 -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/sbin/pwck -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/suexec -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/useradd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/userdel -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/newusers -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/groupadd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/groupdel -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/groupmod -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/semangae -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/usernetctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/ccreds_validate -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/userhelper -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/Xorg -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/rlogin -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/at -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/rsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/kgrantpty -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/staprun -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/rcp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/bin/newrole -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
 
 #2.6.2.4.10 Ensure auditd Collects Information on Exporting to Media (successful)
--a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k export
--a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k export
+-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k export
+-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k export
 
 #2.6.2.4.11 Ensure auditd Collects Files Deletion Events by User (successful and unsuccessful)
--a always,exit -F arch=b32 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
--a always,exit -F arch=b64 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+-a always,exit -F arch=b32 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
+-a always,exit -F arch=b64 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
 
 #2.6.2.4.12 Ensure auditd Collects System Administrator Actions
 -w /etc/sudoers -p wa -k actions
