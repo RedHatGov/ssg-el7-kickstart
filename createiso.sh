@@ -97,6 +97,7 @@ if [[ $? -eq 0 ]]; then
 		echo "ERROR: Image is not RHEL"
 		exit 1
 	fi
+
 	echo -n "Copying RHEL DVD Image..."
 	cp -a /rhel/* $DIR/rhel-dvd/
 	cp -a /rhel/.discinfo $DIR/rhel-dvd/
@@ -108,11 +109,11 @@ else
 	exit 1
 fi
 
-# Set RHEL Version in ISO Linux
-sed -i "s/7.X/$RHEL_VERSION/g" config/isolinux/isolinux.cfg
-
 echo -n "Modifying RHEL DVD Image..."
+# Set RHEL Version in ISO Linux
+sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/isolinux/isolinux.cfg
 cp -a $DIR/config/* $DIR/rhel-dvd/
+sed -i "s/$RHEL_VERSION/7.X/g" $DIR/config/isolinux/isolinux.cfg
 echo " Done."
 echo "Remastering RHEL DVD Image..."
 cd $DIR/rhel-dvd
