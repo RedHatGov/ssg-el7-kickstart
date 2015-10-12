@@ -519,7 +519,6 @@ class Display_Menu:
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
 			f.write('ipa-server\n')
-			f.write('ipa-server-selinux\n')
 			f.write('ipa-admintools\n')
 			f.write('ipa-client\n')
 			f.close()
