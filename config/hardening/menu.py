@@ -394,6 +394,20 @@ class Display_Menu:
                 self.button2.connect("clicked",self.show_help_main)
                 self.button_bar.pack_end(self.button2,False,True,0)
 
+                # Network Configuration
+                self.button3 = gtk.Button("Network",None)
+                self.button3.connect("clicked",self.configure_network,self.window)
+                self.button_bar.pack_end(self.button3,False,True,0)
+
+		# Network Configuration Default Values
+		self.network_device = 0
+		self.network_dhcp = True
+		self.network_ip = "192.168.0.2"
+		self.network_netmask = "255.255.255.0"
+		self.network_gateway = "192.168.0.1"
+		self.network_dns1 = "8.8.8.8"
+		self.network_dns2 = "8.8.4.4"
+
                 self.vbox.add(self.button_bar)
                 self.window.add(self.vbox)
                 self.window.show_all()
@@ -789,6 +803,158 @@ class Display_Menu:
 			self.b = ''
 			dialog.destroy()
 
+
+	# Configure Network Dialog
+	def configure_network(self,parent,window):
+		self.network_dialog = gtk.Dialog("Configure Network",window,gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,(gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
+
+                # List Network Ports
+                self.network = gtk.HBox()
+		self.label = gtk.Label(" Network Device(s): ")
+		self.network.pack_start(self.label, False, True, 0)
+		self.network_devices = gtk.combo_box_new_text()
+                self.output = os.popen("ip link show | grep UP | awk -F ': ' '{ print $2 }'")
+                for self.line in self.output:
+                        self.line = self.line.strip()
+			if not ('lo' in self.line):
+               			self.network_devices.append_text(self.line)
+		self.network.pack_start(self.network_devices,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+		self.dhcp = gtk.CheckButton('DHCP')
+		self.network.pack_start(self.dhcp,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+                self.label = gtk.Label("           IP Address: ")
+                self.network.pack_start(self.label,False,True,0)
+		self.ip = gtk.Entry()
+		self.network.pack_start(self.ip,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+                self.label = gtk.Label("             Netmask: ")
+                self.network.pack_start(self.label,False,True,0)
+		self.netmask = gtk.Entry()
+		self.network.pack_start(self.netmask,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+                self.label = gtk.Label("               Gateway: ")
+                self.network.pack_start(self.label,False,True,0)
+		self.gateway = gtk.Entry()
+		self.network.pack_start(self.gateway,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+                self.label = gtk.Label("                   DNS1: ")
+                self.network.pack_start(self.label,False,True,0)
+		self.dns1 = gtk.Entry()
+		self.network.pack_start(self.dns1,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+		self.network = gtk.HBox()
+                self.label = gtk.Label("                   DNS2: ")
+                self.network.pack_start(self.label,False,True,0)
+		self.dns2 = gtk.Entry()
+		self.network.pack_start(self.dns2,False,True,0)
+		self.network_dialog.vbox.add(self.network)
+
+		self.dhcp.set_active(self.network_dhcp)
+		self.ip.set_text(self.network_ip)
+		self.netmask.set_text(self.network_netmask)
+		self.gateway.set_text(self.network_gateway)
+		self.dns1.set_text(self.network_dns1)
+		self.dns2.set_text(self.network_dns2)
+		self.network_devices.set_active(self.network_device)
+
+		if self.dhcp.get_active() == True:
+			self.dhcp.set_label("DHCP")
+			self.ip.set_sensitive(False)
+			self.netmask.set_sensitive(False)
+			self.gateway.set_sensitive(False)
+			self.dns1.set_sensitive(False)
+			self.dns2.set_sensitive(False)
+		else:
+			self.dhcp.set_label("Static IP")
+			self.ip.set_sensitive(True)
+			self.netmask.set_sensitive(True)
+			self.gateway.set_sensitive(True)
+			self.dns1.set_sensitive(True)
+			self.dns2.set_sensitive(True)
+
+		self.dhcp.connect("toggled", self.check_network)
+		self.ip.connect("grab-focus", self.check_network)
+		self.netmask.connect("grab-focus", self.check_network)
+		self.gateway.connect("grab-focus", self.check_network)
+		self.dns1.connect("grab-focus", self.check_network)
+		self.dns2.connect("grab-focus", self.check_network)
+		self.network_dialog.connect("move-focus", self.check_network)
+
+		self.network_dialog.show_all()
+		response = self.network_dialog.run()
+		if response == gtk.RESPONSE_ACCEPT:
+			self.network_device = self.network_devices.get_active()
+			self.network_name = self.network_devices.get_active_text()
+			self.network_dhcp = self.dhcp.get_active()
+			self.network_ip = self.ip.get_text()
+			self.network_netmask = self.netmask.get_text()
+			self.network_gateway = self.gateway.get_text()
+			self.network_dns1 = self.dns1.get_text()
+			self.network_dns2 = self.dns2.get_text()
+			
+			# Write Network Configuration File
+			if self.dhcp.get_active() == True:			
+				f = open('/tmp/networking','w')
+				f.write('network --bootproto=dhcp --device='+str(self.network_name)+' --noipv6 --activate\n')
+				f.close()
+			else:
+				f = open('/tmp/networking','w')
+				f.write('network --bootproto=static --ip='+str(self.network_ip)+' --netmask='+str(self.network_netmask)+' --gateway='+str(self.network_gateway)+' --nameserver '+str(self.network_dns1)+','+str(self.network_dns2)+' --device='+str(self.network_name)+' --noipv6 --activate\n')
+				f.close()
+
+			self.network_dialog.destroy()
+				
+
+	# DHCP Button Toggle
+	def check_network(self,widget,event=None):
+
+		self.network_error = 0
+
+		if self.dhcp.get_active() == True:
+			self.dhcp.set_label("DHCP")
+			self.ip.set_sensitive(False)
+			self.netmask.set_sensitive(False)
+			self.gateway.set_sensitive(False)
+			self.dns1.set_sensitive(False)
+			self.dns2.set_sensitive(False)
+		else:
+			self.dhcp.set_label("Static IP")
+			self.ip.set_sensitive(True)
+			self.netmask.set_sensitive(True)
+			self.gateway.set_sensitive(True)
+			self.dns1.set_sensitive(True)
+			self.dns2.set_sensitive(True)
+
+			if self.verify.check_ip(self.ip.get_text()) == False:
+				self.MessageBox(self.window,"<b>Invalid IP Address!</b>",gtk.MESSAGE_ERROR)
+				self.network_error = 1
+		    	if self.verify.check_ip(self.netmask.get_text()) == False:
+				self.MessageBox(self.window,"<b>Invalid Netmask!</b>",gtk.MESSAGE_ERROR)
+				self.network_error = 1
+			if self.verify.check_ip(self.gateway.get_text()) == False:
+				self.MessageBox(self.window,"<b>Invalid Gateway!</b>",gtk.MESSAGE_ERROR)
+				self.network_error = 1
+			if self.verify.check_ip(self.dns1.get_text()) == False:
+				self.MessageBox(self.window,"<b>Invalid DNS1 Address!</b>",gtk.MESSAGE_ERROR)
+				self.network_error = 1
+			if self.verify.check_ip(self.dns2.get_text()) == False:
+				self.MessageBox(self.window,"<b>Invalid DNS2 Address!</b>",gtk.MESSAGE_ERROR)
+				self.network_error = 1
+
+		if self.network_error == 1:
+			self.network_dialog.set_response_sensitive(gtk.RESPONSE_ACCEPT,False)
+			return False	
+		else:
+			self.network_dialog.set_response_sensitive(gtk.RESPONSE_ACCEPT,True)
+			return True
+
+
         # Appply Configurations to Kickstart File
         def apply_configuration(self,args):
 
@@ -880,7 +1046,7 @@ class Display_Menu:
 
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
-			f.write('network --device eth0 --bootproto dhcp --noipv6 --hostname '+self.hostname.get_text()+'\n')
+			f.write('network --hostname '+self.hostname.get_text()+'\n')
 			f.write('rootpw --iscrypted '+str(self.password)+'\n')
 			f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
 			f.close()
