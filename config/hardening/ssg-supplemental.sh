@@ -32,6 +32,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
+password requried pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
@@ -63,6 +64,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
+password required pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
@@ -96,6 +98,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
+password required pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
