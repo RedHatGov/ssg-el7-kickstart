@@ -46,7 +46,7 @@ class Verification:
 
 	# Check for vaild IP address
 	def check_ip(self,ip):
-		pattern = re.compile(r"\b(([01]?\d?\d|2[0-4]\d|25[0-5])\.){3}([01]?\d?\d|2[0-4]\d|25[0-3])\b",re.VERBOSE)
+		pattern = re.compile(r"\b(([01]?\d?\d|2[0-4]\d|25[0-5])\.){3}([01]?\d?\d|2[0-4]\d|25[0-5])\b",re.VERBOSE)
 		if re.match(pattern,ip) and ip != "0.0.0.0":
 			return True
 		else:
