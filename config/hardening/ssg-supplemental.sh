@@ -32,7 +32,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
-password requried pam_pwqaulity.so retry=3
+password requried pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
@@ -64,7 +64,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
-password required pam_pwqaulity.so retry=3
+password required pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
@@ -98,7 +98,7 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
-password required pam_pwqaulity.so retry=3
+password required pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password required pam_deny.so
 
@@ -332,7 +332,6 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
 EOF
-
 # Find All privileged commands and monitor them
 for PROG in `find / -type f -perm -04000 2>/dev/null`; do
 	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
