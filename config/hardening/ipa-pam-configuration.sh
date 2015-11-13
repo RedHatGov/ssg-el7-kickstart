@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 8 June 2015
+# Last update was 12 Nov 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -42,8 +42,8 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account [default=bad success=ok user_unknown=ignore] pam_sss.so
 account required pam_permit.so
 
-#password required pam_passwdqc.so min=disabled,disabled,16,12,8 random=42
-password required pam_cracklib.so retry=3 minlen=14 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 difok=3 maxrepeat=3
+# Password Quality now set in /etc/security/pwquality.conf
+password requried pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password sufficient pam_sss.so use_authtok
 password required pam_deny.so
@@ -79,8 +79,8 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account [default=bad success=ok user_unknown=ignore] pam_sss.so
 account required pam_permit.so
 
-#password required pam_passwdqc.so min=disabled,disabled,16,12,8 random=42
-password required pam_cracklib.so retry=3 minlen=14 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 difok=3 maxrepeat=3
+# Password Quality now set in /etc/security/pwquality.conf
+password requried pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password sufficient pam_sss.so use_authtok
 password required pam_deny.so
@@ -117,8 +117,8 @@ account sufficient pam_succeed_if.so uid < 1000 quiet
 account [default=bad success=ok user_unknown=ignore] pam_sss.so
 account required pam_permit.so
 
-#password required pam_passwdqc.so min=disabled,disabled,16,12,8 random=42
-password required pam_cracklib.so retry=3 minlen=14 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 difok=3 maxrepeat=3
+# Password Quality now set in /etc/security/pwquality.conf
+password requried pam_pwqaulity.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password sufficient pam_sss.so use_authtok
 password required pam_deny.so

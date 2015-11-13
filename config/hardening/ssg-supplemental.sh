@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 23 July 2015
+# Last update was 12 Nov 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -108,6 +108,66 @@ session required pam_limits.so
 session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
 session required pam_unix.so
 EOF
+
+cat <<EOF > /etc/security/pwquality.conf
+# Configuration for systemwide password quality limits
+# Defaults:
+#
+# Number of characters in the new password that must not be present in the
+# old password.
+# difok = 5
+difok = 3
+#
+# Minimum acceptable size for the new password (plus one if
+# credits are not disabled which is the default). (See pam_cracklib manual.)
+# Cannot be set to lower value than 6.
+# minlen = 9
+minlen = 14
+#
+# The maximum credit for having digits in the new password. If less than 0
+# it is the minimum number of digits in the new password.
+# dcredit = 1
+dcredit = -1
+#
+# The maximum credit for having uppercase characters in the new password.
+# If less than 0 it is the minimum number of uppercase characters in the new
+# password.
+# ucredit = 1
+ucredit = -1
+#
+# The maximum credit for having lowercase characters in the new password.
+# If less than 0 it is the minimum number of lowercase characters in the new
+# password.
+# lcredit = 1
+lcredit = -1
+#
+# The maximum credit for having other characters in the new password.
+# If less than 0 it is the minimum number of other characters in the new
+# password.
+# ocredit = 1
+ocredit = -1
+#
+# The minimum number of required classes of characters for the new
+# password (digits, uppercase, lowercase, others).
+minclass = 3
+#
+# The maximum number of allowed consecutive same characters in the new password.
+# The check is disabled if the value is 0.
+maxrepeat = 3
+#
+# The maximum number of allowed consecutive characters of the same class in the
+# new password.
+# The check is disabled if the value is 0.
+# maxclassrepeat = 0
+#
+# Whether to check for the words from the passwd entry GECOS string of the user.
+# The check is enabled if the value is not 0.
+# gecoscheck = 0
+#
+# Path to the cracklib dictionaries. Default is to use the cracklib default.
+# dictpath =
+EOF
+
 
 ########################################
 # STIG Audit Configuration
@@ -271,48 +331,13 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
--a always,exit -F path=/bin/ping -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/umount -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/mount -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/chgrp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/bin/ping6 -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/sbin/pwck -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/suexec -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/useradd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/userdel -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/newusers -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupadd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupdel -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/groupmod -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/semangae -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/usernetctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/ccreds_validate -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/sbin/userhelper -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/Xorg -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rlogin -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/at -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/kgrantpty -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/staprun -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/rcp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
--a always,exit -F path=/usr/bin/newrole -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
+EOF
+
+# Find All privileged commands and monitor them
+for PROG in `find / -type f -perm -04000 2>/dev/null`; do
+	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
+done
+cat <<EOF >> /etc/audit/rules.d/audit.rules
 
 #2.6.2.4.10 Ensure auditd Collects Information on Exporting to Media (successful)
 -a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k export
@@ -407,12 +432,12 @@ echo -e "\n## Set timeout for authentiation (5 Minutes)\nDefaults:ALL timestamp_
 #   CCE-27196-5
 ########################################
 for DEVICE in $(/bin/lsblk | grep sr | awk '{ print $1 }'); do
-	mkdir -p /media/$DEVICE
-	echo -e "/dev/$DEVICE\t\t/media/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
+	mkdir -p /mnt/$DEVICE
+	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
 done
 for DEVICE in $(cd /dev;ls *cd* *dvd*); do
-	mkdir -p /media/$DEVICE
-	echo -e "/dev/$DEVICE\t\t/media/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
+	mkdir -p /mnt/$DEVICE
+	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
 done
 
 ########################################
@@ -532,3 +557,96 @@ chown root:root /etc/cron.weekly/aide-report
 chmod 555 /etc/cron.weekly/aide-report
 mkdir -p /var/log/aide/reports
 chmod 700 /var/log/aide/reports
+
+
+########################################
+# USGCB Blacklist
+########################################
+if [ -e /etc/modprobe.d/usgcb-blacklist.conf ]; then
+	rm -f /etc/modprobe.d/usgcb-blacklist.conf
+fi
+touch /etc/modprobe.d/usgcb-blacklist.conf
+chmod 0644 /etc/modprobe.d/usgcb-blacklist.conf
+chcon 'system_u:object_r:modules_conf_t:s0' /etc/modprobe.d/usgcb-blacklist.conf
+
+cat <<EOF > /etc/modprobe.d/usgcb-blacklist.conf
+# Disable Bluetooth
+install bluetooth /bin/true
+# Disable AppleTalk
+install appletalk /bin/true
+# NSA Recommendation: Disable mounting USB Mass Storage
+install usb-storage /bin/true
+# Disable mounting of cramfs CCE-14089-7
+install cramfs /bin/true
+# Disable mounting of freevxfs CCE-14457-6
+install freevxfs /bin/true
+# Disable mounting of hfs CCE-15087-0
+install hfs /bin/true
+# Disable mounting of hfsplus CCE-14093-9
+install hfsplus /bin/true
+# Disable mounting of jffs2 CCE-14853-6
+install jffs2 /bin/true
+# Disable mounting of squashfs CCE-14118-4
+install squashfs /bin/true
+# Disable mounting of udf CCE-14871-8
+install udf /bin/true
+# CCE-14268-7
+install dccp /bin/true
+# CCE-14235-5
+install sctp /bin/true
+#i CCE-14027-7
+install rds /bin/true
+# CCE-14911-2
+install tipc /bin/true
+# CCE-14948-4 (row 176)
+install net-pf-31 /bin/true
+EOF
+
+
+########################################
+# GNOME 3 Lockdowns
+########################################
+if [ -x /bin/gsettings ]; then
+	cat << EOF > /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override
+[org.gnome.login-screen]
+disable-user-list=true
+disable-restart-buttons=true
+banner-message-enable=true
+banner-message-text="$(cat /etc/issue | tr -d '\n\r')"
+
+[org.gnome.desktop.lockdown]
+user-administration-disabled=true
+disable-user-switching=true
+
+[org.gnome.desktop.media-handling]
+automount=false
+automount-open=false
+autorun-never=true
+
+[org.gnome.desktop.notifications] 
+show-in-lock-screen=false
+
+[org.gnome.desktop.privacy]
+remove-old-temp-files=true
+remove-old-trash-files=true
+old-files-age=7
+
+[org.gnome.desktop.interface]
+clock-format="12h"
+
+[org.gnome.desktop.screensaver]
+user-switch-enabled=false
+
+[org.gnome.desktop.session]
+idle-delay=900
+
+[org.gnome.desktop.thumbnailers]
+disable-all=true
+
+[set org.gnome.nm-applet]
+disable-wifi-create=true
+EOF
+	/bin/dconf update
+	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
+fi
+

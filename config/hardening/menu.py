@@ -114,7 +114,7 @@ class Display_Menu:
                 # Creates Information Message
                 self.label = gtk.Label('This DVD installs Red Hat Enterprise Linux 7 with configurations required by multiple government regulations')
                 self.vbox.add(self.label)
-		self.label = gtk.Label('using the SCAP Security Guide (SSG) as a hardening script.                  RHEL 7 (SSG DVD Installer v.0.1b)')
+		self.label = gtk.Label('using the SCAP Security Guide (SSG) as a hardening script.                  RHEL 7 (SSG DVD Installer v.0.8b)')
                 self.vbox.add(self.label)
 
                 # Blank Label
@@ -141,6 +141,8 @@ class Display_Menu:
 		self.system_profile.append_text("Minimal Installation")
 		self.system_profile.append_text("IdM Authentication Server")
 		self.system_profile.append_text("RHEV-Attached KVM Server")
+		self.system_profile.append_text("User Workstation")
+		self.system_profile.append_text("Standalone KVM Server")
 		self.system_profile.set_active(0)
 		self.system_profile.connect('changed',self.configure_system_profile)
                 self.system.pack_start(self.system_profile,False,True,0)
@@ -578,9 +580,59 @@ class Display_Menu:
 
 
 		################################################################################################################
+		# User Workstation
+		################################################################################################################
+		if int(self.system_profile.get_active()) == 3:
+			# Partitioning
+			if self.disk_total < 12:
+				self.MessageBox(self.window,"<b>Recommended minimum 60Gb disk space for a User Workstation!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
+			self.opt_partition.set_value(0)
+			self.www_partition.set_value(0)
+			self.swap_partition.set_value(5)
+			self.tmp_partition.set_value(10)
+			self.var_partition.set_value(10)
+			self.log_partition.set_value(10)
+			self.audit_partition.set_value(10)
+			self.home_partition.set_value(25)
+			self.root_partition.set_value(30)
+			# Post Configuration (nochroot)
+			f = open('/tmp/hardening-post-nochroot','w')
+			f.write('')
+			f.close()
+			# Post Configuration
+			f = open('/tmp/hardening-post','w')
+			# Run Hardening Script
+			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
+			f.write('/usr/bin/oscap xccdf eval --profile stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-firefox-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-firefox-xccdf.xml\n')
+			# Firewall Configuration
+			f.write('firewall-cmd --permanent --add-service=ssh\n')
+			f.write('firewall-cmd --reload\n')
+			f.close()
+			# Package Selection
+			f = open('/tmp/hardening-packages','w')
+			f.write('@x-window-system\n')
+			f.write('liberation*\n')
+			f.write('dejavu*\n')
+			f.write('gnome-classic-session\n')
+			f.write('gnome-terminal\n')
+			f.write('nautilus-open-terminal\n')
+			f.write('control-center\n')
+			f.write('seahorse\n')
+			f.write('seahorse-nautilus\n')
+			f.write('file-roller\n')
+			f.write('file-roller-nautilus\n')
+			f.write('evince\n')
+			f.write('evince-nautilus\n')
+			f.write('firefox\n')
+			f.write('pygtk2\n')
+			f.write('vim-X11\n')
+			f.close()
+
+
+		################################################################################################################
 		# Standalone KVM Installation
 		################################################################################################################
-		if int(self.system_profile.get_active()) == 8:
+		if int(self.system_profile.get_active()) == 4:
 			# Partitioning
 			if self.disk_total < 60:
 				self.MessageBox(self.window,"<b>Recommended minimum 60Gb disk space for a RHEL/KVM Server!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
@@ -600,24 +652,35 @@ class Display_Menu:
 			# Post Configuration
 			f = open('/tmp/hardening-post','w')
 			# Run Hardening Script
-			#f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
+			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
+			f.write('/usr/bin/oscap xccdf eval --profile stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-firefox-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-firefox-xccdf.xml\n')
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
-			f.write('@storage-client-iscsi\n')
-			f.write('@virtualization\n')
+			f.write('@x-window-system\n')
 			f.write('@virtualization-client\n')
 			f.write('@virtualization-platform\n')
-			f.write('@virtualization-tools\n')
-			f.write('perl-Sys-Virt\n')
-			f.write('qemu-kvm-tools\n')
-			f.write('fence-virtd-libvirt\n')
-			f.write('virt-v2v\n')
+			f.write('liberation*\n')
+			f.write('dejavu*\n')
+			f.write('gnome-classic-session\n')
+			f.write('gnome-terminal\n')
+			f.write('nautilus-open-terminal\n')
+			f.write('control-center\n')
+			f.write('seahorse\n')
+			f.write('seahorse-nautilus\n')
+			f.write('file-roller\n')
+			f.write('file-roller-nautilus\n')
+			f.write('evince\n')
+			f.write('evince-nautilus\n')
+			f.write('firefox\n')
+			f.write('pygtk2\n')
+			f.write('vim-X11\n')
+			f.write('-firewall*\n')
+			f.write('iptables\n')
 			f.write('ebtables\n')
-			f.write('libguestfs-tools\n')
 			f.close()
 
 
