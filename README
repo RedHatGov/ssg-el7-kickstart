@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 23 July 2015
+# Last update was 13 Nov 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -65,6 +65,7 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 			Graphical Classification Banner (for GNOME Desktops User/
 			Developer Workstation Profiles)
 
+		openscap*.rpm
 		scap-security-guide-*.el7.noarch.rpm
 
 			Uses OpenSCAP and the SCAP Security Guide (SSG) to test and
@@ -85,16 +86,20 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 
 		iptables.sh (use with KVM host - which prefers iptables/ebtables)
 
-			Configures firewall during kickstart installation. Called in
-			menu.py script. Firewall is configured to reccomended ports
-			for each product or profile. Copied to /root after kickstart
-			install
+			Configures iptables firewall during kickstart installation. 
+			Called in menu.py script. Firewall is configured to reccomended
+			ports for each product or profile. Copied to /root after kickstart
+			install. FirewallD is defualt except for KVM systems.
 
 		ipa-pam-configuration.sh
 
 			Configures system for using IPA/IdM authentication by
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
+			
+		ssg-firefox.tar.gz
+		
+			SCAP Security Guide for implimenting DISA STIG on Firefox.
 
 HARDENING INFORMATION
 =====================
