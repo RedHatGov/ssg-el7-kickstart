@@ -341,12 +341,6 @@ chattr +i /etc/selinux/config
 ln -sf /dev/null /etc/systemd/system/ctrl-alt-del.target
 
 ########################################
-# Set Runlevel 3 Target
-########################################
-systemctl enable multi-user.target --force
-ln -sf /usr/lib/systemd/system/multi-user.target /etc/systemd/system/default.target
-
-########################################
 # Limit Root Login to Console
 ########################################
 cat <<EOF > /etc/securetty
