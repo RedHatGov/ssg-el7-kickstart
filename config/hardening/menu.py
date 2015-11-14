@@ -443,7 +443,7 @@ class Display_Menu:
 
 	# Shows Help for Main Install
         def show_help_main(self,args):
-		self.help_text = ("<b>Install Help</b>\n\n- All LVM partitions need to take less than or equal to 100% of the LVM Volume Group.\n\n- Pressing OK prompts for a password to encrypt Disk (LUKS), GRUB, and Root password.\n\n- The sshusers group controls remote access, wheel group is for root users, and isso group is for limited root with auditing permissions.\n\n- To access root remotely via ssh you need to create a user and add them to the wheel and sshusers groups.\n\n- Minimum password length is 14 characters, using a strong password is recommended.\n")
+		self.help_text = ("<b>Install Help</b>\n\n- All LVM partitions need to take less than or equal to 100% of the LVM Volume Group.\n\n- Pressing OK prompts for a password to encrypt Disk (LUKS), GRUB, and Root password.\n\n- The sshusers group controls remote access, wheel group is for root users, and isso group is for limited root with auditing permissions.\n\n- To access root remotely via ssh you need to create a user and add them to the wheel and sshusers groups.\n\n- Minimum password length is 15 characters, using a strong password is recommended.\n")
                 self.MessageBox(self.window,self.help_text,gtk.MESSAGE_INFO)
 
 
@@ -910,11 +910,11 @@ class Display_Menu:
 			if self.a == self.b:
 				if len(self.a) == 0:
 					return
-				elif len(self.a) >= 14:
+				elif len(self.a) >= 15:
 					self.passwd = self.a
 					break
 				else:
-					self.MessageBox(self.window,"<b>Password too short! 14 Characters Required.</b>",gtk.MESSAGE_ERROR)
+					self.MessageBox(self.window,"<b>Password too short! 15 Characters Required.</b>",gtk.MESSAGE_ERROR)
 			else:
 				self.MessageBox(self.window,"<b>Passwords Don't Match!</b>",gtk.MESSAGE_ERROR)
 			

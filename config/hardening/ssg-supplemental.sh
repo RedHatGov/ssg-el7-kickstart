@@ -86,13 +86,13 @@ cat <<EOF > /etc/security/pwquality.conf
 # Number of characters in the new password that must not be present in the
 # old password.
 # difok = 5
-difok = 3
+difok = 15
 #
 # Minimum acceptable size for the new password (plus one if
 # credits are not disabled which is the default). (See pam_cracklib manual.)
 # Cannot be set to lower value than 6.
 # minlen = 9
-minlen = 14
+minlen = 15
 #
 # The maximum credit for having digits in the new password. If less than 0
 # it is the minimum number of digits in the new password.
@@ -303,7 +303,7 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
 EOF
 # Find All privileged commands and monitor them
-for PROG in `find / -type f -perm -04000 2>/dev/null`; do
+for PROG in `find / -type f -perm -04000 -o -type f -perm -2000 2>/dev/null`; do
 	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
 done
 cat <<EOF >> /etc/audit/rules.d/audit.rules
@@ -572,10 +572,11 @@ EOF
 if [ -x /bin/gsettings ]; then
 	cat << EOF > /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override
 [org.gnome.login-screen]
-disable-user-list=true
-disable-restart-buttons=true
 banner-message-enable=true
 banner-message-text="$(cat /etc/issue | tr -d '\n\r')"
+disable-user-list=true
+disable-restart-buttons=true
+
 
 [org.gnome.desktop.lockdown]
 user-administration-disabled=true
@@ -606,10 +607,35 @@ idle-delay=900
 [org.gnome.desktop.thumbnailers]
 disable-all=true
 
-[set org.gnome.nm-applet]
+[org.gnome.nm-applet]
 disable-wifi-create=true
 EOF
+	cat << EOF > /etc/dconf/db/gdm.d/locks/99-gnome-hardening
+/org/gnome/login-screen/disable-user-list
+/org/gnome/login-screen/disable-restart-buttons
+/org/gnome/login-screen/banner-message-enable
+/org/gnome/login-screen/banner-message-text
+/org/gnome/desktop/lockdown/user-administration-disabled
+/org/gnome/desktop/lockdown/disable-user-switching
+/org/gnome/desktop/media-handling/automount
+/org/gnome/desktop/media-handling/automount-open
+/org/gnome/desktop/media-handling/autorun-never
+/org/gnome/desktop/notifications/show-in-lock-screen
+/org/gnome/desktop/privacy/remove-old-temp-files
+/org/gnome/desktop/privacy/remove-old-trash-files
+/org/gnome/desktop/privacy/old-files-age
+/org/gnome/desktop/screensaver/user-switch-enabled
+/org/gnome/desktop/session/idle-delay
+/org/gnome/desktop/thumbnailers/disable-all
+/org/gnome/nm-applet/disable-wifi-create
+EOF
+	cp /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override /etc/dconf/db/gdm.d/99-gnome-hardening
+ 	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 	/bin/dconf update
-	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 fi
 
+########################################
+# Disable SystemD Date Service 
+# Use (chrony or ntpd)
+########################################
+timedatectl set-ntp false
