@@ -48,7 +48,7 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 
 		isolinux.cfg - Menu Configuration for Kickstart
 
-	stig-fix/
+	hardening/
 
 		ssg-rhel.cfg
 		
@@ -118,15 +118,10 @@ in addition to the SSG:
 4. The 'sshusers' group is required for SSH/SFTP access, other users are 
    limited to console access without this group
    
-5. Runlevel 3 is configured by default to meet requirements, run the following
-   for an X Windows session:
-   
-   	$ startx
-
-6. Additional Software such as McAfee EPo/HBSS may be required meet site 
+5. Additional Software such as McAfee EPo/HBSS may be required meet site 
    policy
 
-7. Configure NTP (/etc/ntp.conf) and rsyslog logging to remote server 
+6. Configure NTP (/etc/chrony.conf) and rsyslog logging to remote server 
    (/etc/rsyslog.conf)
 
 8. Create users:
