@@ -495,6 +495,8 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
+			# Runlevel Configuration
+			f.write('systemctl set-default multi-user.target\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
@@ -531,6 +533,8 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('firewall-cmd --permanent --add-service=ssh --add-service=http --add-service=https --add-service=ldap --add-service=ldaps --add-service=kerberos --add-service=kpasswd --add-service=dns --add-service=ntp\n')
 			f.write('firewall-cmd --reload\n')
+			# Runlevel Configuration
+			f.write('systemctl set-default multi-user.target\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
@@ -570,6 +574,8 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			# Runlevel Configuration
+			f.write('systemctl set-default multi-user.target\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
@@ -607,6 +613,8 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
+			# Runlevel Configuration
+			f.write('systemctl set-default graphical.target\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
@@ -657,6 +665,8 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			# Runlevel Configuration
+			f.write('systemctl set-default graphical.target\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
@@ -681,140 +691,6 @@ class Display_Menu:
 			f.write('-firewall*\n')
 			f.write('iptables\n')
 			f.write('ebtables\n')
-			f.close()
-
-
-		################################################################################################################
-		# Apache HTTPD (Web Server)
-		################################################################################################################
-		if int(self.system_profile.get_active()) == 9:
-			# Partitioning
-			if self.disk_total < 10:
-				self.MessageBox(self.window,"<b>Recommended minimum of 10Gb disk space for a Web Server!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
-			self.opt_partition.set_value(0)
-			self.www_partition.set_value(0)
-			self.swap_partition.set_value(5)
-			self.tmp_partition.set_value(10)
-			self.var_partition.set_value(10)
-			self.log_partition.set_value(10)
-			self.audit_partition.set_value(10)
-			self.home_partition.set_value(25)
-			self.root_partition.set_value(30)
-			# Post Configuration (nochroot)
-			f = open('/tmp/hardening-post-nochroot','w')
-			f.write('')
-			f.close()
-			# Post Configuration
-			f = open('/tmp/hardening-post','w')
-			# Run Hardening Script
-			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
-			# Firewall Configuration
-			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh --https\n')
-			f.close()
-			# Package Selection
-			f = open('/tmp/hardening-packages','w')
-			f.write('httpd\n')
-			f.close()
-
-
-		################################################################################################################
-		# Apache HTTPD/Tomcat
-		################################################################################################################
-		if int(self.system_profile.get_active()) == 10:
-			# Partitioning
-			if self.disk_total < 10:
-				self.MessageBox(self.window,"<b>Recommended minimum of 10Gb disk space for an Apache Tomcat Web Server!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
-			self.opt_partition.set_value(0)
-			self.www_partition.set_value(0)
-			self.swap_partition.set_value(5)
-			self.tmp_partition.set_value(10)
-			self.var_partition.set_value(10)
-			self.log_partition.set_value(10)
-			self.audit_partition.set_value(10)
-			self.home_partition.set_value(25)
-			self.root_partition.set_value(30)
-			# Post Configuration (nochroot)
-			f = open('/tmp/hardening-post-nochroot','w')
-			f.write('')
-			f.close()
-			# Post Configuration
-			f = open('/tmp/hardening-post','w')
-			# Run Hardening Script
-			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
-			f.close()
-			# Package Selection
-			f = open('/tmp/hardening-packages','w')
-			f.write('tomcat6\n')
-			f.write('httpd\n')
-			f.close()
-
-
-		################################################################################################################
-		# PostgreSQL Database
-		################################################################################################################
-		if int(self.system_profile.get_active()) == 11:
-			# Partitioning
-			if self.disk_total < 16:
-				self.MessageBox(self.window,"<b>Recommended minimum of 16Gb disk space for a PostgreSQL Database Server!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
-			self.opt_partition.set_value(0)
-			self.www_partition.set_value(0)
-			self.swap_partition.set_value(5)
-			self.tmp_partition.set_value(10)
-			self.var_partition.set_value(10)
-			self.log_partition.set_value(10)
-			self.audit_partition.set_value(10)
-			self.home_partition.set_value(25)
-			self.root_partition.set_value(30)
-			# Post Configuration (nochroot)
-			f = open('/tmp/hardening-post-nochroot','w')
-			f.write('')
-			f.close()
-			# Post Configuration
-			f = open('/tmp/hardening-post','w')
-			# Run Hardening Script
-			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
-			# Firewall Configuration
-			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh --postgresql\n')
-			f.close()
-			# Package Selection
-			f = open('/tmp/hardening-packages','w')
-			f.write('postgresql\n')
-			f.close()
-
-
-		################################################################################################################
-		# MariaDB Database
-		################################################################################################################
-		if int(self.system_profile.get_active()) == 12:
-			# Partitioning
-			if self.disk_total < 16:
-				self.MessageBox(self.window,"<b>Recommended minimum of 16Gb disk space for a MariaDB Database Server!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
-			self.opt_partition.set_value(0)
-			self.www_partition.set_value(0)
-			self.swap_partition.set_value(5)
-			self.tmp_partition.set_value(10)
-			self.var_partition.set_value(10)
-			self.log_partition.set_value(10)
-			self.audit_partition.set_value(10)
-			self.home_partition.set_value(25)
-			self.root_partition.set_value(30)
-			# Post Configuration (nochroot)
-			f = open('/tmp/hardening-post-nochroot','w')
-			f.write('')
-			f.close()
-			# Post Configuration
-			f = open('/tmp/hardening-post','w')
-			# Run Hardening Script
-			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml\n')
-			# Firewall Configuration
-			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh --mysql\n')
-			f.close()
-			# Package Selection
-			f = open('/tmp/hardening-packages','w')
-			f.write('mysql-server\n')
 			f.close()
 
 
