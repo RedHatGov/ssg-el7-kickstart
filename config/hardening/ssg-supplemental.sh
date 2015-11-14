@@ -39,6 +39,7 @@ password required pam_deny.so
 session required pam_lastlog.so showfailed
 session optional pam_keyinit.so revoke
 session required pam_limits.so
+-session optional pam_systemd.so
 session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
 session required pam_unix.so
 EOF
@@ -71,6 +72,7 @@ password required pam_deny.so
 session required pam_lastlog.so showfailed
 session optional pam_keyinit.so revoke
 session required pam_limits.so
+-session optional pam_systemd.so
 session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
 session required pam_unix.so
 EOF
