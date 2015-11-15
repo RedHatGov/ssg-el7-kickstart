@@ -11,6 +11,13 @@
 # Author: Frank Caviggia <fcaviggi (at) redhat.com>
 
 ########################################
+# LEGAL BANNER CONFIGURATION
+########################################
+BANNER_MESSAGE_TEXT='You are accessing a U.S. Government (USG) Information System (IS) that is \nprovided for USG-authorized use only. By using this IS (which includes any \ndevice attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for \npurposes including, but not limited to, penetration testing, COMSEC monitoring, \nnetwork operations and defense, personnel misconduct (PM), law enforcement \n(LE), and counterintelligence (CI) investigations.\n\n-At any time, the USG may inspect and seize data stored on this IS.\n\n-Communications using, or data stored on, this IS are not private, are subject \nto routine monitoring, interception, and search, and may be disclosed or used \nfor any USG-authorized purpose.\n\n-This IS includes security measures (e.g., authentication and access controls) \nto protect USG interests -- not for your personal benefit or privacy.\n\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE \nor CI investigative searching or monitoring of the content of privileged \ncommunications, or work product, related to personal representation or services \nby attorneys, psychotherapists, or clergy, and their assistants. Such \ncommunications and work product are private and confidential. See User \nAgreement for details.\n\n'
+echo -e "${BANNER_MESSAGE_TEXT}" > /etc/issue
+echo -e "${BANNER_MESSAGE_TEXT}" > /etc/issue.net
+
+########################################
 # DISA STIG PAM Configurations
 ########################################
 cat <<EOF > /etc/pam.d/system-auth-local
@@ -585,7 +592,7 @@ if [ -x /bin/gsettings ]; then
 	cat << EOF > /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override
 [org.gnome.login-screen]
 banner-message-enable=true
-banner-message-text="$(cat /etc/issue | tr -d '\n\r')"
+banner-message-text="${BANNER_MESSAGE_TEXT}"
 disable-user-list=true
 disable-restart-buttons=true
 
