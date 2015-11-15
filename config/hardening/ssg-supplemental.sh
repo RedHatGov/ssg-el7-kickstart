@@ -330,15 +330,18 @@ cat <<EOF >> /etc/audit/rules.d/audit.rules
 -e 2
 EOF
 
+
 ########################################
 # Make SELinux Configuration Immutable
 ########################################
 chattr +i /etc/selinux/config
 
+
 ########################################
 # Disable Control-Alt-Delete
 ########################################
 ln -sf /dev/null /etc/systemd/system/ctrl-alt-del.target
+
 
 ########################################
 # Limit Root Login to Console
@@ -347,6 +350,7 @@ cat <<EOF > /etc/securetty
 console
 tty1
 EOF
+
 
 ########################################
 # Disable Interactive Shell (Timeout)
@@ -367,6 +371,7 @@ chown root:root /etc/profile.d/autologout.csh
 chmod 755 /etc/profile.d/autologout.sh
 chmod 755 /etc/profile.d/autologout.csh
 
+
 ########################################
 # Vlock Alias (Cosole Screen Lock)
 ########################################
@@ -383,12 +388,14 @@ chown root:root /etc/profile.d/vlock-alias.csh
 chmod 755 /etc/profile.d/vlock-alias.sh
 chmod 755 /etc/profile.d/vlock-alias.csh
 
+
 ########################################
 # Wheel Group Require (sudo)
 ########################################
 sed -i -re '/pam_wheel.so use_uid/s/^#//' /etc/pam.d/su
 sed -i 's/^#\s*\(%wheel\s*ALL=(ALL)\s*ALL\)/\1/' /etc/sudoers
 echo -e "\n## Set timeout for authentiation (5 Minutes)\nDefaults:ALL timestamp_timeout=5\n" >> /etc/sudoers
+
 
 ########################################
 # Set Removeable Media to noexec
@@ -403,6 +410,7 @@ for DEVICE in $(cd /dev;ls *cd* *dvd*); do
 	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
 done
 
+
 ########################################
 # SSHD Hardening
 ########################################
@@ -415,6 +423,7 @@ echo "Banner /etc/issue" >> /etc/ssh/sshd_config
 if [ $(grep -c sshusers /etc/group) -eq 0 ]; then
 	/usr/sbin/groupadd sshusers &> /dev/null
 fi
+
 
 ########################################
 # TCP_WRAPPERS
@@ -429,6 +438,7 @@ cat <<EOF >> /etc/hosts.deny
 # Deny All by Default
 ALL: ALL
 EOF
+
 
 ########################################
 # Filesystem Attributes
@@ -488,6 +498,7 @@ if [ $(grep " \/var " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
 	${SED} -i "s/\( \/var.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
 fi
 
+
 ########################################
 # File Ownership 
 ########################################
@@ -501,6 +512,7 @@ find / -nogroup -print | xargs chown :root
 EOF
 chown root:root /etc/cron.daily/unowned_files
 chmod 0700 /etc/cron.daily/unowned_files
+
 
 ########################################
 # AIDE Initialization
@@ -577,7 +589,6 @@ banner-message-text="$(cat /etc/issue | tr -d '\n\r')"
 disable-user-list=true
 disable-restart-buttons=true
 
-
 [org.gnome.desktop.lockdown]
 user-administration-disabled=true
 disable-user-switching=true
@@ -633,6 +644,7 @@ EOF
  	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 	/bin/dconf update
 fi
+
 
 ########################################
 # Disable SystemD Date Service 
