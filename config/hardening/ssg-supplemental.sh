@@ -589,50 +589,50 @@ EOF
 # GNOME 3 Lockdowns
 ########################################
 if [ -x /bin/gsettings ]; then
-	cat << EOF > /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override
-[org.gnome.login-screen]
+	cat << EOF > /usr/share/glib-2.0/schemas/99-custom-settings.gschema.override
+[org/gnome/login-screen]
 banner-message-enable=true
-banner-message-text="${BANNER_MESSAGE_TEXT}"
+banner-message-text='${BANNER_MESSAGE_TEXT}'
 disable-user-list=true
 disable-restart-buttons=true
 
-[org.gnome.desktop.lockdown]
+[org/gnome/desktop/lockdown]
 user-administration-disabled=true
 disable-user-switching=true
 
-[org.gnome.desktop.media-handling]
+[org/gnome/desktop/media-handling]
 automount=false
 automount-open=false
 autorun-never=true
 
-[org.gnome.desktop.notifications] 
+[org/gnome/desktop/notifications] 
 show-in-lock-screen=false
 
-[org.gnome.desktop.privacy]
+[org/gnome/desktop/privacy]
 remove-old-temp-files=true
 remove-old-trash-files=true
 old-files-age=7
 
-[org.gnome.desktop.interface]
-clock-format="12h"
+[org/gnome/desktop/interface]
+clock-format='12h'
 
-[org.gnome.desktop.screensaver]
+[org/gnome/desktop/screensaver]
 user-switch-enabled=false
 
-[org.gnome.desktop.session]
+[org/gnome/desktop/session]
 idle-delay=900
 
-[org.gnome.desktop.thumbnailers]
+[org/gnome/desktop/thumbnailers]
 disable-all=true
 
-[org.gnome.nm-applet]
+[org/gnome/nm-applet]
 disable-wifi-create=true
 EOF
 	cat << EOF > /etc/dconf/db/gdm.d/locks/99-gnome-hardening
-/org/gnome/login-screen/disable-user-list
-/org/gnome/login-screen/disable-restart-buttons
 /org/gnome/login-screen/banner-message-enable
 /org/gnome/login-screen/banner-message-text
+/org/gnome/login-screen/disable-user-list
+/org/gnome/login-screen/disable-restart-buttons
 /org/gnome/desktop/lockdown/user-administration-disabled
 /org/gnome/desktop/lockdown/disable-user-switching
 /org/gnome/desktop/media-handling/automount
@@ -647,7 +647,7 @@ EOF
 /org/gnome/desktop/thumbnailers/disable-all
 /org/gnome/nm-applet/disable-wifi-create
 EOF
-	cp /usr/share/glib-2.0/schemas/99_custom_settings.gschema.override /etc/dconf/db/gdm.d/99-gnome-hardening
+	cp /usr/share/glib-2.0/schemas/99-custom-settings.gschema.override /etc/dconf/db/gdm.d/99-gnome-hardening
  	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 	/bin/dconf update
 fi
