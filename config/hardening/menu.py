@@ -582,7 +582,6 @@ class Display_Menu:
 			f.write('-firewall*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
-			f.write('ip6tables\n')
 			f.close()
 
 
@@ -698,7 +697,6 @@ class Display_Menu:
 			f.write('-firewall*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
-			f.write('ip6tables\n')
 			f.close()
 
 
