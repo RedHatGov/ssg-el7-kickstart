@@ -686,6 +686,7 @@ disable-all=true
 [org.gnome.nm-applet]
 disable-wifi-create=true
 EOF
+	cp /etc/dconf/db/gdm.d/locks/99-gnome-hardening /etc/dconf/db/local.d/locks/99-gnome-hardening
  	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 	/bin/dconf update
 fi
