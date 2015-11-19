@@ -592,7 +592,7 @@ if [ -x /bin/gsettings ]; then
 	cat << EOF > /usr/share/glib-2.0/schemas/99-custom-settings.gschema.override
 [org/gnome/login-screen]
 banner-message-enable=true
-banner-message-text='${BANNER_MESSAGE_TEXT}'
+banner-message-text="${BANNER_MESSAGE_TEXT}"
 disable-user-list=true
 disable-restart-buttons=true
 
@@ -614,7 +614,7 @@ remove-old-trash-files=true
 old-files-age=7
 
 [org/gnome/desktop/interface]
-clock-format='12h'
+clock-format="12h"
 
 [org/gnome/desktop/screensaver]
 user-switch-enabled=false
