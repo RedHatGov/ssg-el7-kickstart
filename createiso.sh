@@ -113,7 +113,7 @@ echo -n "Modifying RHEL DVD Image..."
 # Set RHEL Version in ISO Linux
 sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/isolinux/isolinux.cfg
 cp -a $DIR/config/* $DIR/rhel-dvd/
-if [[ $MINOR -gte 2 ]]; then
+if [[ $MINOR -ge 2 ]]; then
 	rm -f $DIR/rhel-dvd/hardening/openscap*rpm 
 fi
 sed -i "s/$RHEL_VERSION/7.X/g" $DIR/config/isolinux/isolinux.cfg
