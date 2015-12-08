@@ -27,7 +27,7 @@ Red Hat Enterprise Linux 7.
 The kickstart script involves the integration of the following projects 
 into a single installer:
 
-   - classification-banner.py (Python for displaying graphical classification banner)
+   - classification-banner.py (Python for displaying a graphical classification banner)
    
         https://github.com/RedHatGov/classification-banner
 
@@ -79,7 +79,7 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 		rhevm-preinstall.sh
 		rhevm-postinstall.sh
 
-			Scripts to losen settings temporararily to allow registration
+			Scripts to loosen settings temporarily to allow registration
 			of the system with RHEV-M by allowing root login and allowing
 			exec in /tmp. Run rhevm-postinstall.sh after system is added
 			into RHEV-M. Copied to /root after kickstart install
@@ -87,9 +87,9 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 		iptables.sh (use with KVM host - which prefers iptables/ebtables)
 
 			Configures iptables firewall during kickstart installation. 
-			Called in menu.py script. Firewall is configured to reccomended
+			Called in menu.py script. Firewall is configured to recommended
 			ports for each product or profile. Copied to /root after kickstart
-			install. FirewallD is defualt except for KVM systems.
+			install. FirewallD is default except for KVM systems.
 
 		ipa-pam-configuration.sh
 
@@ -112,7 +112,7 @@ in addition to the SSG:
 2. Shell timeout (bash/csh) is 15 minutes of inactivity, vlock will lock CLI
    console
 
-3. The 'wheel' group is required for privleged users (beyond root) to run 
+3. The 'wheel' group is required for privileged users (beyond root) to run 
    `su -` or `sudo -i` commands, sudo timeout is 5 minutes
 
 4. The 'sshusers' group is required for SSH/SFTP access, other users are 
