@@ -40,6 +40,6 @@ systemctl restart sshd.service
 mount -o remount,exec /tmp
 
 # UMASK 0022 for root to allow VDSMD configuration
-if [ $(greq -c "umask 0022" /root/.bashrc) -eq 0 ]; then
+if [ $(grep -c "umask 0022" /root/.bashrc) -eq 0 ]; then
 	echo "umask 0022" >> /root/.bashrc
 fi

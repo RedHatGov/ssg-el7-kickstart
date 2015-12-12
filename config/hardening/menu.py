@@ -511,7 +511,7 @@ class Display_Menu:
 			# Turn off FIPS 140-2 mode for Kernel
 			self.fips_kernel.set_active(False)
 			# Partitioning
-			if self.disk_total < 8:
+			if self.disk_total < 10:
 				self.MessageBox(self.window,"<b>Recommended minimum of 10Gb disk space for a IdM Authentication Server Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
 			self.opt_partition.set_value(0)
 			self.www_partition.set_value(5)
@@ -593,7 +593,7 @@ class Display_Menu:
 		if int(self.system_profile.get_active()) == 3:
 			# Partitioning
 			if self.disk_total < 12:
-				self.MessageBox(self.window,"<b>Recommended minimum 60Gb disk space for a User Workstation!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
+				self.MessageBox(self.window,"<b>Recommended minimum 12Gb disk space for a User Workstation!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
 			self.opt_partition.set_value(0)
 			self.www_partition.set_value(0)
 			self.swap_partition.set_value(5)
