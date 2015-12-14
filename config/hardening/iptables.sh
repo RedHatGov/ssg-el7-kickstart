@@ -27,7 +27,8 @@ usage: $0 [options]
   --kerberos	Allows Kerberos (88,464/tcp/udp)
   --ldap	Allows LDAP (389/tcp/udp)
   --ldaps	Allows LDAPS (636/tcp/udp)
-
+  --nfsv4	Allows NFSv4 (2049/tcp)
+  --iscsi	Allows iSCSI (3260/tcp)
   --samba       Allows Samba Services (137,138/udp;139,445/tcp)
   --mysql	Allows MySQL (3306/tcp)
   --postgresql	Allows PostgreSQL (5432/tcp)
