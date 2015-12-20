@@ -541,6 +541,7 @@ class Display_Menu:
 			f.write('ipa-server\n')
 			f.write('ipa-admintools\n')
 			f.write('ipa-client\n')
+			f.write('ipa-server-dns\n')
 			f.close()
 			
 		################################################################################################################
