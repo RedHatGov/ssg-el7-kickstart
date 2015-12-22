@@ -575,6 +575,10 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			f.write('systemctl mask firewalld\n')
+			f.write('systemctl stop firewalld\n')
+			f.write('systemctl enable iptables\n')
+			f.write('systemctl start iptables\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default multi-user.target\n')
 			f.close()
@@ -671,6 +675,10 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			f.write('systemctl mask firewalld\n')
+			f.write('systemctl stop firewalld\n')
+			f.write('systemctl enable iptables\n')
+			f.write('systemctl start iptables\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default graphical.target\n')
 			f.close()
