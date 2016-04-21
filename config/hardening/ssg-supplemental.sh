@@ -697,3 +697,8 @@ fi
 # Use (chrony or ntpd)
 ########################################
 timedatectl set-ntp false
+
+########################################
+# Disable Kernel Dump Service
+########################################
+systemctl mask kdump.service
