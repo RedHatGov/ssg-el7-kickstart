@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 12 Nov 2015
+# Last update was 18 May 2016
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -722,6 +722,12 @@ fi
 # CCE-27127-0, SC-30(2), 1.6.1
 ########################################
 echo "kernel.randomize_va_space = 2" >> /etc/sysctl.conf
+
+########################################
+# Kernel - Accept Source Routed Packets
+# AC-4, 366, SRG-OS-000480-GPOS-00227
+########################################
+echo "net.ipv6.conf.all.accept_source_route = 0" >> /etc/sysctl.conf
 
 ########################################
 # Disable SystemD Date Service 
