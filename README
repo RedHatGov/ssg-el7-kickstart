@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 13 Nov 2015
+# Last update was 25 May 2016
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -16,13 +16,11 @@
 ABOUT
 =====
 
-THIS CONFIGURATION CURRENTLY BETA - RHEL 7.2 should have the offical Common
-Criteria evaluation and FIPS 140-2 certification. Right now, only the minimal
-installation profile is configured. Additional profiles will be added shortly.
-
-Modifies a RHEL 7.1+ x86_64 Workstation or Server DVD with a kickstart
+Modifies a RHEL 7.2+ x86_64 Workstation or Server DVD with a kickstart
 that will install a system that is configured and hardened for
 Red Hat Enterprise Linux 7. 
+
+NOTE: ROOT ACCOUNT IS LOCKED WITH INSTALL USE 'admin' ACCOUNT WITH 'sudo' INSTEAD.
 
 The kickstart script involves the integration of the following projects 
 into a single installer:
