@@ -551,6 +551,8 @@ chmod 0700 /etc/cron.daily/unowned_files
 # AIDE Initialization
 ########################################
 if [ ! -e /var/lib/aide/aide.db.gz ]; then
+	#FIPS MODE AIDE CONFIGURATION
+	sed -i 's/^NORMAL\s=.*/NORMAL = FIPSR+sha512/' /etc/aide.conf
 	echo "Initializing AIDE database, this step may take quite a while!"
 	/usr/sbin/aide --init &> /dev/null
 	echo "AIDE database initialization complete."
@@ -559,7 +561,7 @@ fi
 cat <<EOF > /etc/cron.weekly/aide-report
 #!/bin/sh
 # Generate Weekly AIDE Report
-\`/usr/sbin/aide --check > /var/log/aide/reports/\$(hostname)-aide-report-\$(date +%Y%m%d).txt\`
+\`/usr/sbin/aide --check | tee -a /var/log/aide/reports/\$(hostname)-aide-report-\$(date +%Y%m%d).txt | /bin/mail -s "\$(hostname) - AIDE Integrity Check" root@localhost\`
 EOF
 chown root:root /etc/cron.weekly/aide-report
 chmod 555 /etc/cron.weekly/aide-report
