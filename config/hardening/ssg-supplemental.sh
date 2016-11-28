@@ -341,6 +341,14 @@ EOF
 
 
 ########################################
+# Fix cron.allow
+########################################
+echo "root" > /etc/cron.allow
+chmod 400 /etc/cron.allow
+chown root:root /etc/cron.allow
+
+
+########################################
 # Make SELinux Configuration Immutable
 ########################################
 chattr +i /etc/selinux/config
