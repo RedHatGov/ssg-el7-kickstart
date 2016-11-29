@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 25 May 2016
+# Last update was 29 Nov 2016
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -16,7 +16,7 @@
 ABOUT
 =====
 
-Modifies a RHEL 7.2+ x86_64 Workstation or Server DVD with a kickstart
+Modifies a RHEL 7.3+ x86_64 Workstation or Server DVD with a kickstart
 that will install a system that is configured and hardened for
 Red Hat Enterprise Linux 7. 
 
@@ -98,6 +98,10 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 		ssg-firefox.tar.gz
 		
 			SCAP Security Guide for implimenting DISA STIG on Firefox.
+			
+		usbguard-*.x86_64.rpm
+		
+			USB guard will control what USB devices are accessible by the system.
 
 HARDENING INFORMATION
 =====================
