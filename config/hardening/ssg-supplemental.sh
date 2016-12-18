@@ -385,12 +385,19 @@ chmod 755 /etc/profile.d/autologout.sh
 chmod 755 /etc/profile.d/autologout.csh
 
 
-########################################
+#########################################
 # Set Shell UMASK Setting (027)
 ########################################
 cat <<EOF > /etc/profile.d/umask.sh
 #!/bin/sh
-umask 027
+
+# Non-Privledged Users get 027
+# Privledged Users get 022
+if [[ $EUID -ne 0 ]]; then
+	umask 027
+else
+	umask 022
+fi
 EOF
 cat <<EOF > /etc/profile.d/umask.csh
 #!/bin/csh
