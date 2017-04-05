@@ -112,6 +112,7 @@ fi
 echo -n "Modifying RHEL DVD Image..."
 # Set RHEL Version in ISO Linux
 sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/isolinux/isolinux.cfg
+sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/EFI/BOOT/grub.cfg
 cp -a $DIR/config/* $DIR/rhel-dvd/
 if [[ $MINOR -ge 2 ]]; then
 	rm -f $DIR/rhel-dvd/hardening/openscap*rpm 
@@ -122,7 +123,7 @@ echo "Remastering RHEL DVD Image..."
 cd $DIR/rhel-dvd
 chmod u+w isolinux/isolinux.bin
 find . -name TRANS.TBL -exec rm '{}' \; 
-/usr/bin/mkisofs -J -T -V "RHEL-$RHEL_VERSION Server.x86_64" -o $DIR/ssg-rhel-$RHEL_VERSION.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -m TRANS.TBL .
+/usr/bin/mkisofs -J -T -V "RHEL-$RHEL_VERSION Server.x86_64" -o $DIR/ssg-rhel-$RHEL_VERSION.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot -R -m TRANS.TBL .
 cd $DIR
 rm -rf $DIR/rhel-dvd
 echo "Done."
