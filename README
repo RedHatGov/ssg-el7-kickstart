@@ -95,10 +95,6 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
 			
-		ssg-firefox.tar.gz
-		
-			SCAP Security Guide for implimenting DISA STIG on Firefox.
-			
 		usbguard-*.x86_64.rpm
 		
 			USB guard will control what USB devices are accessible by the system.
