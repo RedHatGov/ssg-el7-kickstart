@@ -63,6 +63,11 @@ if [ $? -ne 0 ]; then
 	yum install -y genisoimage
 fi
 
+rpm -q syslinux &> /dev/null
+if [ $? -ne 0 ]; then
+	yum install -y syslinux 
+fi
+
 rpm -q isomd5sum &> /dev/null
 if [ $? -ne 0 ]; then
 	yum install -y isomd5sum
@@ -129,6 +134,7 @@ rm -rf $DIR/rhel-dvd
 echo "Done."
 
 echo "Signing RHEL DVD Image..."
+/usr/bin/isohybrid --uefi $DIR/ssg-rhel-$RHEL_VERSION.iso &> /dev/null
 /usr/bin/implantisomd5 $DIR/ssg-rhel-$RHEL_VERSION.iso
 echo "Done."
 

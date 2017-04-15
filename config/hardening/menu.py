@@ -2,7 +2,7 @@
 # Graphical Kickstart Script
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 06 July 2015
+# Last update was 14 April 2017
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -281,6 +281,10 @@ class Display_Menu:
 		self.fips_kernel = gtk.CheckButton('Kernel in FIPS 140-2 Mode')
 		self.fips_kernel.set_active(True)
 		self.encrypt.pack_start(self.fips_kernel, False, True, 0)
+
+                self.nousb_kernel = gtk.CheckButton('Disable USB (nousb)')
+		self.nousb_kernel.set_active(False)
+		self.encrypt.pack_start(self.nousb_kernel, False, True, 0)
 
 		self.vbox.add(self.encrypt)
 
@@ -923,6 +927,20 @@ class Display_Menu:
 			# Enable FIPS 140-2 mode in Kernel
 			f.write('\n/root/hardening/fips-kernel-mode.sh\n')
 			f.close()
+                else:
+			f = open('/tmp/hardening-post','a')
+			# Disable FIPS 140-2 mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="fips=1"\n')
+			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/defualt/grub\n')
+			f.close()
+
+		# Disable USB (nousb kernel option)
+		if self.fips_kernel.get_active() == False:		
+			f = open('/tmp/hardening-post','a')
+			# Disable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ nousb//" /etc/default/grub\n')
+			f.close()
 
 		# Set system password
 		while True:
@@ -1019,7 +1037,7 @@ class Display_Menu:
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
-			if os.path.isfile('/sys/firmware/efi'):
+			if os.path.isdir('/sys/firmware/efi'):
 				f.write('part /boot/efi --fstype=efi --size=200\n')
 			f.write('volgroup vg1 --pesize=4096 pv.01\n')
 			f.write('logvol / --fstype=xfs --name=lv_root --vgname=vg1 --grow --percent='+str(self.root_partition.get_value_as_int())+'\n')
