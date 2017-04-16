@@ -123,6 +123,7 @@ if [[ $MINOR -ge 2 ]]; then
 	rm -f $DIR/rhel-dvd/hardening/openscap*rpm 
 fi
 sed -i "s/$RHEL_VERSION/7.X/g" $DIR/config/isolinux/isolinux.cfg
+sed -i "s/$RHEL_VERSION/7.X/g" $DIR/config/EFI/BOOT/grub.cfg
 echo " Done."
 echo "Remastering RHEL DVD Image..."
 cd $DIR/rhel-dvd
