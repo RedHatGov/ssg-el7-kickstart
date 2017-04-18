@@ -473,7 +473,7 @@ class Display_Menu:
 			self.profile='stig-rhel7-server-upstream'
 
 		################################################################################################################
-		# Minimal (Defualts to Kickstart)
+		# Minimal (Defaults to Kickstart)
 		################################################################################################################
 		if int(self.system_profile.get_active()) == 0:
 			# Partitioning
@@ -931,11 +931,17 @@ class Display_Menu:
 			f = open('/tmp/hardening-post','a')
 			# Disable FIPS 140-2 mode in Kernel
 			f.write('\ngrubby --update-kernel=ALL --remove-args="fips=1"\n')
-			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/defualt/grub\n')
+			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/default/grub\n')
 			f.close()
 
 		# Disable USB (nousb kernel option)
-		if self.fips_kernel.get_active() == False:		
+		if self.nousb_kernel.get_active() == True:
+			f = open('/tmp/hardening-post','a')
+			# Enable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ quiet/quiet nousb/" /etc/default/grub\n')
+			f.close()
+		else:
 			f = open('/tmp/hardening-post','a')
 			# Disable nousb mode in Kernel
 			f.write('\ngrubby --update-kernel=ALL --remove-args="nousb"\n')
