@@ -2,7 +2,7 @@
 # Graphical Kickstart Script
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 06 July 2015
+# Last update was 14 April 2017
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -282,6 +282,10 @@ class Display_Menu:
 		self.fips_kernel.set_active(True)
 		self.encrypt.pack_start(self.fips_kernel, False, True, 0)
 
+                self.nousb_kernel = gtk.CheckButton('Disable USB (nousb)')
+		self.nousb_kernel.set_active(False)
+		self.encrypt.pack_start(self.nousb_kernel, False, True, 0)
+
 		self.vbox.add(self.encrypt)
 
 
@@ -443,7 +447,7 @@ class Display_Menu:
 
 	# Shows Help for Main Install
         def show_help_main(self,args):
-		self.help_text = ("<b>Install Help</b>\n\n- All LVM partitions need to take less than or equal to 100% of the LVM Volume Group.\n\n- Pressing OK prompts for a password to encrypt Disk (LUKS), GRUB, and Root password.\n\n- The sshusers group controls remote access, wheel group is for root users, and isso group is for limited root with auditing permissions.\n\n- To access root remotely via ssh you need to create a user and add them to the wheel and sshusers groups.\n\n- Minimum password length is 15 characters, using a strong password is recommended.\n")
+		self.help_text = ("<b>Install Help</b>\n\n- All LVM partitions need to take less than or equal to 100% of the LVM Volume Group.\n\n- Pressing OK prompts for a password to encrypt Disk (LUKS), GRUB, and admin password.\n\n- The sshusers group controls remote access, wheel group is for root users, and isso group is for limited root with auditing permissions.\n\n- To access root remotely via ssh you need to create a user and add them to the wheel and sshusers groups.\n\n- Minimum password length is 15 characters, using a strong password is recommended.\n")
                 self.MessageBox(self.window,self.help_text,gtk.MESSAGE_INFO)
 
 
@@ -511,7 +515,7 @@ class Display_Menu:
 			# Turn off FIPS 140-2 mode for Kernel
 			self.fips_kernel.set_active(False)
 			# Partitioning
-			if self.disk_total < 8:
+			if self.disk_total < 10:
 				self.MessageBox(self.window,"<b>Recommended minimum of 10Gb disk space for a IdM Authentication Server Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
 			self.opt_partition.set_value(0)
 			self.www_partition.set_value(5)
@@ -541,6 +545,7 @@ class Display_Menu:
 			f.write('ipa-server\n')
 			f.write('ipa-admintools\n')
 			f.write('ipa-client\n')
+			f.write('ipa-server-dns\n')
 			f.close()
 			
 		################################################################################################################
@@ -574,6 +579,10 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			f.write('systemctl mask firewalld\n')
+			f.write('systemctl stop firewalld\n')
+			f.write('systemctl enable iptables\n')
+			f.write('systemctl start iptables\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default multi-user.target\n')
 			f.close()
@@ -584,6 +593,7 @@ class Display_Menu:
 			f.write('iptables\n')
 			f.write('iptables-services\n')
 			f.write('libvirt\n')
+			f.write('pciutils\n')
 			f.close()
 
 
@@ -593,7 +603,7 @@ class Display_Menu:
 		if int(self.system_profile.get_active()) == 3:
 			# Partitioning
 			if self.disk_total < 12:
-				self.MessageBox(self.window,"<b>Recommended minimum 60Gb disk space for a User Workstation!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
+				self.MessageBox(self.window,"<b>Recommended minimum 12Gb disk space for a User Workstation!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
 			self.opt_partition.set_value(0)
 			self.www_partition.set_value(0)
 			self.swap_partition.set_value(5)
@@ -623,10 +633,10 @@ class Display_Menu:
 			f.write('@x-window-system\n')
 			f.write('liberation*\n')
 			f.write('dejavu*\n')
+			f.write('firewall-config\n')
 			f.write('gnome-classic-session\n')
 			f.write('gnome-terminal\n')
 			f.write('gnome-calculator\n')
-			f.write('nautilus-open-terminal\n')
 			f.write('control-center\n')
 			f.write('pulseaudio-module-x11\n')
 			f.write('alsa-plugins-pulseaudio\n')
@@ -670,6 +680,10 @@ class Display_Menu:
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
+			f.write('systemctl mask firewalld\n')
+			f.write('systemctl stop firewalld\n')
+			f.write('systemctl enable iptables\n')
+			f.write('systemctl start iptables\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default graphical.target\n')
 			f.close()
@@ -683,7 +697,6 @@ class Display_Menu:
 			f.write('gnome-classic-session\n')
 			f.write('gnome-terminal\n')
 			f.write('gnome-calculator\n')
-			f.write('nautilus-open-terminal\n')
 			f.write('control-center\n')
 			f.write('pulseaudio-module-x11\n')
 			f.write('alsa-plugins-pulseaudio\n')
@@ -914,6 +927,26 @@ class Display_Menu:
 			# Enable FIPS 140-2 mode in Kernel
 			f.write('\n/root/hardening/fips-kernel-mode.sh\n')
 			f.close()
+                else:
+			f = open('/tmp/hardening-post','a')
+			# Disable FIPS 140-2 mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="fips=1"\n')
+			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/default/grub\n')
+			f.close()
+
+		# Disable USB (nousb kernel option)
+		if self.nousb_kernel.get_active() == True:
+			f = open('/tmp/hardening-post','a')
+			# Enable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ quiet/quiet nousb/" /etc/default/grub\n')
+			f.close()
+		else:
+			f = open('/tmp/hardening-post','a')
+			# Disable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ nousb//" /etc/default/grub\n')
+			f.close()
 
 		# Set system password
 		while True:
@@ -968,37 +1001,37 @@ class Display_Menu:
 			self.password = crypt.crypt(self.passwd,self.salt)
 
 			# Write Classification Banner Settings
-			if int(self.system_profile.get_active()) == 1 or int(self.system_profile.get_active()) == 2:
-				f = open('/tmp/classification-banner','w')
-				f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
-				if int(self.system_classification.get_active()) == 0 or int(self.system_classification.get_active()) == 1:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#00CC00"\n')
-				elif int(self.system_classification.get_active()) == 2:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#33FFFF"\n')
-				elif int(self.system_classification.get_active()) == 3:
-					f.write('fgcolor = "#FFFFFF"\n')
-					f.write('bgcolor = "#FF0000"\n')
-				elif int(self.system_classification.get_active()) == 4:
-					f.write('fgcolor = "#FFFFFF"\n')
-					f.write('bgcolor = "#FF9900"\n')
-				elif int(self.system_classification.get_active()) == 5:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFF00"\n')
-				elif int(self.system_classification.get_active()) == 6:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFF00"\n')
-				else:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFFFF"\n')
-				f.close()
+			f = open('/tmp/classification-banner','w')
+			f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
+			if int(self.system_classification.get_active()) == 0 or int(self.system_classification.get_active()) == 1:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#00CC00"\n')
+			elif int(self.system_classification.get_active()) == 2:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#33FFFF"\n')
+			elif int(self.system_classification.get_active()) == 3:
+				f.write('fgcolor = "#FFFFFF"\n')
+				f.write('bgcolor = "#FF0000"\n')
+			elif int(self.system_classification.get_active()) == 4:
+				f.write('fgcolor = "#FFFFFF"\n')
+				f.write('bgcolor = "#FF9900"\n')
+			elif int(self.system_classification.get_active()) == 5:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFF00"\n')
+			elif int(self.system_classification.get_active()) == 6:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFF00"\n')
+			else:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFFFF"\n')
+			f.close()
 
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+'\n')
-			f.write('rootpw --iscrypted '+str(self.password)+'\n')
-			f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
+			f.write('rootpw --iscrypted '+str(self.password)+' --lock\n') 
+			f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n') 
+			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n') 
 			f.close()
 			f = open('/tmp/partitioning','w')
 			if self.data["IGNORE_DRIVES"] != "":
@@ -1010,6 +1043,8 @@ class Display_Menu:
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
+			if os.path.isdir('/sys/firmware/efi'):
+				f.write('part /boot/efi --fstype=efi --size=200\n')
 			f.write('volgroup vg1 --pesize=4096 pv.01\n')
 			f.write('logvol / --fstype=xfs --name=lv_root --vgname=vg1 --grow --percent='+str(self.root_partition.get_value_as_int())+'\n')
 			f.write('logvol /home --fstype=xfs --name=lv_home --vgname=vg1 --grow --percent='+str(self.home_partition.get_value_as_int())+'\n')

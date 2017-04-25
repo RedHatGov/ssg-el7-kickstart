@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 13 Nov 2015
+# Last update was 29 Nov 2016
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -16,13 +16,11 @@
 ABOUT
 =====
 
-THIS CONFIGURATION CURRENTLY BETA - RHEL 7.2 should have the offical Common
-Criteria evaluation and FIPS 140-2 certification. Right now, only the minimal
-installation profile is configured. Additional profiles will be added shortly.
-
-Modifies a RHEL 7.1+ x86_64 Workstation or Server DVD with a kickstart
+Modifies a RHEL 7.3+ x86_64 Workstation or Server DVD with a kickstart
 that will install a system that is configured and hardened for
 Red Hat Enterprise Linux 7. 
+
+NOTE: ROOT ACCOUNT IS LOCKED WITH INSTALL USE 'admin' ACCOUNT WITH 'sudo' INSTEAD.
 
 The kickstart script involves the integration of the following projects 
 into a single installer:
@@ -97,9 +95,9 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
 			
-		ssg-firefox.tar.gz
+		usbguard-*.x86_64.rpm
 		
-			SCAP Security Guide for implimenting DISA STIG on Firefox.
+			USB guard will control what USB devices are accessible by the system.
 
 HARDENING INFORMATION
 =====================
@@ -126,6 +124,8 @@ in addition to the SSG:
 
 8. Create users:
 
+	NOTE: The root user is locked now - use 'admin' user account with sudo instead of root.
+
         Local Console Access Only (Unprivileged)
           
                # useradd -m -c "Local User" localuser
@@ -138,9 +138,6 @@ in addition to the SSG:
                
                # useradd -m -c "System Administrator" -G sshusers,wheel admin
                
-        (Optional) After adding SAs to the system, lock the root account:
-          
-               # passwd -l root
 
 9. Wireless  is disabled in a number of ways with Network Manager including:
 
