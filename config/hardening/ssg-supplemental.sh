@@ -401,8 +401,8 @@ chmod 755 /etc/profile.d/autologout.csh
 cat <<EOF > /etc/profile.d/umask.sh
 #!/bin/sh
 
-# Non-Privledged Users get 027
-# Privledged Users get 022
+# Non-Privileged Users get 027
+# Privileged Users get 022
 if [[ \$EUID -ne 0 ]]; then
 	umask 027
 else
@@ -441,7 +441,7 @@ chmod 755 /etc/profile.d/vlock-alias.csh
 ########################################
 sed -i -re '/pam_wheel.so use_uid/s/^#//' /etc/pam.d/su
 sed -i 's/^#\s*\(%wheel\s*ALL=(ALL)\s*ALL\)/\1/' /etc/sudoers
-echo -e "\n## Set timeout for authentiation (5 Minutes)\nDefaults:ALL timestamp_timeout=5\n" >> /etc/sudoers
+echo -e "\n## Set timeout for authentication (5 Minutes)\nDefaults:ALL timestamp_timeout=5\n" >> /etc/sudoers
 
 
 ########################################
