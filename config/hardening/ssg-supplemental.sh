@@ -261,10 +261,8 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 ##############################
 
 #2.6.2.4.1 Records Events that Modify Date and Time Information
--a always,exit -F arch=b32 -S adjtimex -S stime -S settimeofday -k time-change
--a always,exit -F arch=b32 -S clock_settime -k time-change
--a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
--a always,exit -F arch=b64 -S clock_settime -k time-change
+-a always,exit -F arch=b32 -S adjtimex -S stime -S settimeofday -S clock_settime -k time-change
+-a always,exit -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time-change
 -w /etc/localtime -p wa -k time-change
 
 #2.6.2.4.2 Record Events that Modify User/Group Information
@@ -318,8 +316,8 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
 EOF
 # Find All privileged commands and monitor them
-for PROG in `find / -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
-	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
+for fs in $(awk '($3 ~ /(ext[234])|xfs)/) {print $2}' /proc/mounts ; do
+	find $fs -xdev -type f \( -perm -4000 -o -perm -2000 \) | awk '{print "-a always,exit -F path=" $1 " -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged" }' >> /etc/audit/rules.d/audit.rules
 done
 cat <<EOF >> /etc/audit/rules.d/audit.rules
 
