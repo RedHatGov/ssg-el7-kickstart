@@ -273,7 +273,6 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -w /etc/gshadow -p wa -k identity
 -w /etc/shadow -p wa -k identity
 -w /etc/security/opasswd -p wa -k identity
--w /etc/sudoers
 
 #2.6.2.4.3 Record Events that Modify the Systems Network Environment
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k audit_network_modifications
