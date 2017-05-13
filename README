@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 29 Nov 2016
+# Last update was 13 May 2017
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -118,9 +118,10 @@ in addition to the SSG:
    
 5. Additional Software such as McAfee EPo/HBSS may be required meet site 
    policy
+   
+6. Configure PTP or NTP for time synchronization (/etc/chrony.conf or /etc/ntp.conf)
 
-6. Configure NTP (/etc/chrony.conf) and rsyslog logging to remote server 
-   (/etc/rsyslog.conf)
+7. Configure rsyslog to send logs to a centralized log monitoring. (/etc/rsyslog.conf)
 
 8. Create users:
 
