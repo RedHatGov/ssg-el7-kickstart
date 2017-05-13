@@ -261,10 +261,8 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 ##############################
 
 #2.6.2.4.1 Records Events that Modify Date and Time Information
--a always,exit -F arch=b32 -S adjtimex -S stime -S settimeofday -k time-change
--a always,exit -F arch=b32 -S clock_settime -k time-change
--a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
--a always,exit -F arch=b64 -S clock_settime -k time-change
+-a always,exit -F arch=b32 -S adjtimex -S stime -S settimeofday -S clock_settime -k time-change
+-a always,exit -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time-change
 -w /etc/localtime -p wa -k time-change
 
 #2.6.2.4.2 Record Events that Modify User/Group Information
@@ -294,43 +292,6 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -w /var/log/btmp -p wa -k session
 -w /var/log/wtmp -p wa -k session
 
-#2.6.2.4.7 Ensure auditd Collects Discretionary Access Control Permission Modification Events
--a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
-
-#2.6.2.4.8 Ensure auditd Collects Unauthorized Access Attempts to Files (unsuccessful)
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
-
-#2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
--a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/setsebool -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/restorecon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/userhelper -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
--a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
-EOF
-# Find All privileged commands and monitor them
-for PROG in `find / -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
-	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
-done
-cat <<EOF >> /etc/audit/rules.d/audit.rules
-
-#2.6.2.4.10 Ensure auditd Collects Information on Exporting to Media (successful)
--a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k export
--a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k export
-
-#2.6.2.4.11 Ensure auditd Collects Files Deletion Events by User (successful and unsuccessful)
--a always,exit -F arch=b32 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
--a always,exit -F arch=b64 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
-
 #2.6.2.4.12 Ensure auditd Collects System Administrator Actions
 -w /etc/sudoers -p wa -k actions
 
@@ -340,6 +301,49 @@ cat <<EOF >> /etc/audit/rules.d/audit.rules
 -w /sbin/modprobe -p x -k modules
 -a always,exit -F arch=b32 -S init_module -S delete_module -k modules
 -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
+
+# Ignore all the anonymous events. Often tagged on every rule, but ignoring 
+# up front should improve processing time
+-a exit,never -F auid=4294967295
+# Ignore system services
+-a exit,never -F auid<1000
+
+#2.6.2.4.7 Ensure auditd Collects Discretionary Access Control Permission Modification Events
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -k perm_mod
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -k perm_mod
+-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -k perm_mod
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -k perm_mod
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -k perm_mod
+
+#2.6.2.4.8 Ensure auditd Collects Unauthorized Access Attempts to Files (unsuccessful)
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -k access
+
+#2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
+-a always,exit -F path=/usr/sbin/semanage -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/usr/sbin/setsebool -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/usr/sbin/restorecon -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/usr/bin/userhelper -F perm=x -F key=privileged
+-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F key=privileged
+-a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F key=privileged
+EOF
+# Find all privileged commands and monitor them
+for fs in $(awk '($3 ~ /(ext[234])|xfs)/) {print $2}' /proc/mounts ; do
+	find $fs -xdev -type f \( -perm -4000 -o -perm -2000 \) | awk '{print "-a always,exit -F path=" $1 " -F perm=x -k privileged" }' >> /etc/audit/rules.d/audit.rules
+done
+cat <<EOF >> /etc/audit/rules.d/audit.rules
+
+#2.6.2.4.10 Ensure auditd Collects Information on Exporting to Media (successful)
+-a always,exit -F arch=b32 -S mount -k export
+-a always,exit -F arch=b64 -S mount -k export
+
+#2.6.2.4.11 Ensure auditd Collects Files Deletion Events by User (successful and unsuccessful)
+-a always,exit -F arch=b32 -S unlink -S rmdir -S unlinkat -S rename -S renameat -k delete
+-a always,exit -F arch=b64 -S unlink -S rmdir -S unlinkat -S rename -S renameat -k delete
 
 #2.6.2.4.14 Make the auditd Configuration Immutable
 -e 2
@@ -397,8 +401,8 @@ chmod 755 /etc/profile.d/autologout.csh
 cat <<EOF > /etc/profile.d/umask.sh
 #!/bin/sh
 
-# Non-Privledged Users get 027
-# Privledged Users get 022
+# Non-Privileged Users get 027
+# Privileged Users get 022
 if [[ \$EUID -ne 0 ]]; then
 	umask 027
 else
@@ -437,7 +441,7 @@ chmod 755 /etc/profile.d/vlock-alias.csh
 ########################################
 sed -i -re '/pam_wheel.so use_uid/s/^#//' /etc/pam.d/su
 sed -i 's/^#\s*\(%wheel\s*ALL=(ALL)\s*ALL\)/\1/' /etc/sudoers
-echo -e "\n## Set timeout for authentiation (5 Minutes)\nDefaults:ALL timestamp_timeout=5\n" >> /etc/sudoers
+echo -e "\n## Set timeout for authentication (5 Minutes)\nDefaults:ALL timestamp_timeout=5\n" >> /etc/sudoers
 
 
 ########################################
