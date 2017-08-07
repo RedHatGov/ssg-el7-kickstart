@@ -2,7 +2,7 @@
 # SCAP Security Guide RHEL 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 13 May 2017
+# Last update was 6 August 2017
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 # Please contact Rick Tavares for more information.
 #
@@ -16,7 +16,7 @@
 ABOUT
 =====
 
-Modifies a RHEL 7.3+ x86_64 Workstation or Server DVD with a kickstart
+Modifies a RHEL 7.4+ x86_64 Workstation or Server DVD with a kickstart
 that will install a system that is configured and hardened for
 Red Hat Enterprise Linux 7. 
 
@@ -38,7 +38,7 @@ into a single installer:
 CONTENT
 =======
 
-createiso.sh - installation script to modify RHEL 7.1+ ISO image
+createiso.sh - installation script to modify RHEL 7.4+ ISO image
 
 /config - Kickstarts, Python, and RPMs needed to modify image.
 

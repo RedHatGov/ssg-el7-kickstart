@@ -74,26 +74,26 @@ if [ $? -ne 0 ]; then
 fi
 
 # Determine if DVD is Bootable
-`file $1 | grep 9660 | grep -q bootable`
+`file $1 | grep -q -e "9660.*boot" -e "x86 boot" -e "DOS/MBR boot"`
 if [[ $? -eq 0 ]]; then
 	echo "Mounting RHEL DVD Image..."
 	mkdir -p /rhel
 	mkdir $DIR/rhel-dvd
 	mount -o loop $1 /rhel
 	echo "Done."
-	# Tests DVD for RHEL 7.1+
+	# Tests DVD for RHEL 7.4+
 	if [ -e /rhel/.discinfo ]; then
-		RHEL_VERSION=$(grep "Red Hat" /rhel/.discinfo | awk '{ print $5 }')
+		RHEL_VERSION=$(grep "Red Hat" /rhel/.discinfo | awk -F ' ' '{ print $5 }')
 		MAJOR=$(echo $RHEL_VERSION | awk -F '.' '{ print $1 }')
-		MINOR=$(echo $RHEL_VERSION | awk -F '.' '{ print $2 }')
+		MINOR=$(echo $RHEL_VERSION | awk -F '.' -F ' ' '{ print $2 }')
 		if [[ $MAJOR -ne 7 ]]; then
-			echo "ERROR: Image is not RHEL 7.1+"
+			echo "ERROR: Image is not RHEL 7.4+"
 			umount /rhel
 			rm -rf /rhel
 			exit 1
 		fi
-		if [[ $MINOR -lt 1 ]]; then
-			echo "ERROR: Image is not RHEL 7.1+"
+		if [[ $MINOR -ge 4 ]]; then
+			echo "ERROR: Image is not RHEL 7.4+"
 			umount /rhel
 			rm -rf /rhel
 			exit 1
@@ -119,7 +119,7 @@ echo -n "Modifying RHEL DVD Image..."
 sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/isolinux/isolinux.cfg
 sed -i "s/7.X/$RHEL_VERSION/g" $DIR/config/EFI/BOOT/grub.cfg
 cp -a $DIR/config/* $DIR/rhel-dvd/
-if [[ $MINOR -ge 2 ]]; then
+if [[ $MINOR -ge 3 ]]; then
 	rm -f $DIR/rhel-dvd/hardening/openscap*rpm 
 fi
 sed -i "s/$RHEL_VERSION/7.X/g" $DIR/config/isolinux/isolinux.cfg
