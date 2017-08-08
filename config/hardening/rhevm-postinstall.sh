@@ -17,7 +17,7 @@ fi
 
 echo -e "\033[3m\033[1mRHEV Post-Install Script\033[0m\033[0m"
 
-/usr/bin/oscap xccdf eval --profile stig-rhel7-server-upstream --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml &> /dev/null
+/usr/bin/oscap xccdf eval --profile stig-rhevh-upstream --remediate --results /root/`hostname`-ssg-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-rhel7-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-rhel7-xccdf.xml &> /dev/null
 
 # Disallow Root Login
 gpasswd -d root sshusers

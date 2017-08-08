@@ -146,6 +146,7 @@ maxclassrepeat = 2
 EOF
 
 echo -e "FAIL_DELAY\t4" >> /etc/login.defs
+echo -e "CREATE_HOME\tyes" >> /etc/login.defs
 
 
 ########################################
@@ -628,6 +629,11 @@ EOF
 # GNOME 3 Lockdowns
 ########################################
 if [ -x /bin/gsettings ]; then
+	cat << EOF > /etc/gdm/custom.conf
+[daemon]
+TimedLoginEnable=false
+AutomaticLoginEnable=false
+EOF
 	cat << EOF > /etc/dconf/db/gdm.d/99-gnome-hardening
 [org/gnome/login-screen]
 banner-message-enable=true

@@ -135,7 +135,7 @@ class Display_Menu:
                 self.hostname.set_text('localhost.localdomain')
         except:
             self.hostname.set_text('localhost.localdomain')
-        self.label = gtk.Label("              System Profile: ")                
+        self.label = gtk.Label("              System Profile: ") 
         self.system.pack_start(self.label,False,True, 0)
         self.system_profile = gtk.combo_box_new_text()
         self.system_profile.append_text("Minimal Installation")
@@ -420,7 +420,7 @@ class Display_Menu:
 
         ## STOCK CONFIGURATIONS (Minimal Install)
         # Default SSG Profile (DISA STIG)
-        self.profile='stig-rhel7-server-upstream'
+        self.profile='stig-rhel7-disa'
         # Post Configuration (nochroot)
         f = open('/tmp/hardening-post-nochroot','w')
         f.write('')
@@ -470,7 +470,7 @@ class Display_Menu:
 
         # Define SSG Security Profile
         if int(self.system_security.get_active()) == 0:
-            self.profile='stig-rhel7-server-upstream'
+            self.profile='stig-rhel7-disa'
 
         ################################################################################################################
         # Minimal (Defaults to Kickstart)
