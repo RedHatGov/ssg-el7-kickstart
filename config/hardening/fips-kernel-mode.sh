@@ -14,7 +14,7 @@
 # FIPS 140-2 Kernel Mode
 ########################################
 rpm -q prelink && sed -i '/^PRELINKING/s,yes,no,' /etc/sysconfig/prelink
-rpm -q prelink && prelink -uav
+rpm -q prelink && prelink -ua
 dracut -f
 BOOT="UUID=$(findmnt -no uuid /boot)"
 /sbin/grubby --update-kernel=ALL --args="boot=${BOOT} fips=1"
