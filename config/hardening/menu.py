@@ -991,8 +991,8 @@ class Display_Menu:
             self.salt = ''
             self.alphabet = '.abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             for self.i in range(16):
-                    self.index = random.randrange(len(self.alphabet))
-                    self.salt = self.salt+self.alphabet[self.index]
+				self.index = random.randrange(len(self.alphabet))
+				self.salt = self.salt+self.alphabet[self.index]
 
             # Encrypt Password
             self.salt = '$6$'+self.salt
@@ -1022,7 +1022,7 @@ class Display_Menu:
 			else:
 				f.write('fgcolor = "#FFFFFF"\n')
 				f.write('bgcolor = "#007A33"\n')
-			f.close()
+	    	f.close()
 
             # Write Kickstart Configuration
             f = open('/tmp/hardening','w')
