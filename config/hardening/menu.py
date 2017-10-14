@@ -1019,7 +1019,7 @@ class Display_Menu:
 	    elif int(self.system_classification.get_active()) == 6:
 		f.write('fgcolor = "#000000"\n')
 		f.write('bgcolor = "#F7EA48"\n')
-            else:
+	    else:
 		f.write('fgcolor = "#FFFFFF"\n')
 		f.write('bgcolor = "#007A33"\n')
 	    f.close()
