@@ -2,11 +2,10 @@
 # This script was written by Frank Caviggia, Red Hat Consulting
 # Last update was 11 March 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
-# Please contact Rick Tavares for more information.
 #
 # Script: rhevm-preinstall.sh
 # Description: Losens Hardening settings temporarily to allow registration with RHEVM 3.x
-# License: GPL (see COPYING)
+# License: Apache License, Version 2.0
 # Copyright: Red Hat Consulting, March 2015
 
 # Check for root user

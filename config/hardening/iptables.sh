@@ -2,13 +2,12 @@
 # This script was written by Frank Caviggia, Red Hat Consulting
 # Last update was 2 June 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
-# Please contact Rick Tavares for more information.
 #
 # Script: iptables.sh (system-hardening)
-# Description: RHEL 6 Hardening Supplemental to SSG firewall configuration script
-# License: GPL
+# Description: RHEL Hardening Supplemental to SSG firewall configuration script
+# License: Apache License, Version 2.0
 # Copyright: Red Hat Consulting, March 2015
-# Author: Frank Caviggia <fcaviggi (at) redhat.com>
+# Author: Frank Caviggia (fcaviggia@gmail.com)
 
 # USAGE STATEMENT
 function usage() {

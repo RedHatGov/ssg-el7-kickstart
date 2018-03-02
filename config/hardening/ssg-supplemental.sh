@@ -2,13 +2,12 @@
 # This script was written by Frank Caviggia, Red Hat Consulting
 # Last update was 14 Apri 2017
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
-# Please contact Rick Tavares for more information.
 #
 # Script: ssg-suplemental.sh (system-hardening)
 # Description: RHEL 7 Hardening Supplemental to SSG
-# License: GPL (see COPYING)
+# License: Apache License, Version 2.0
 # Copyright: Red Hat Consulting, March 2015
-# Author: Frank Caviggia <fcaviggi (at) redhat.com>
+# Author: Frank Caviggia (fcaviggia@gmail.com)
 
 ########################################
 # LEGAL BANNER CONFIGURATION

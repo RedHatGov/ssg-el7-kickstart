@@ -2,13 +2,12 @@
 # This script was written by Frank Caviggia, Red Hat Consulting
 # Last update was 16 Nov 2015
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
-# Please contact Rick Tavares for more information.
 #
 # Script: ipa-pam-configuration.sh (system-hardening)
 # Description: RHEL 7 Hardening Supplemental to SSG, configures PAM with sssd if system is registered with IdM.
-# License: GPL
+# License: Apache License, Version 2.0
 # Copyright: Red Hat Consulting, March 2015
-# Author: Frank Caviggia <fcaviggi (at) redhat.com>
+# Author: Frank Caviggia (fcaviggia@gmail.com)
 
 # Backup original configuration
 if [ ! -e /etc/pam.d/system-auth-local.orig ]; then
