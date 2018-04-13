@@ -549,7 +549,7 @@ class Display_Menu:
         # RHEV-Attached KVM Server
         ################################################################################################################
         if int(self.system_profile.get_active()) == 2:
-            # WARNING - HARDENDING SCRIPT NOT RUN!
+            # WARNING - HARDENING SCRIPT NOT RUN!
             self.MessageBox(self.window,"<b>Warning:</b> Please run the following script before adding system RHEV-M:\n\n   # /root/rhevm-preinstall.sh\n\nAfter adding the system to RHEV-M, run the following:\n\n   # /root/rhevm-postinstall.sh",gtk.MESSAGE_WARNING)
             # Partitioning
             if self.disk_total < 60:
@@ -739,7 +739,7 @@ class Display_Menu:
     def get_password(self,parent):
         dialog = gtk.Dialog("Configure System Password",parent,gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL,gtk.RESPONSE_REJECT,gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
         self.pass1 = gtk.HBox()
-        self.label1 = gtk.Label("          Passsword: ")
+        self.label1 = gtk.Label("           Password: ")
         self.pass1.pack_start(self.label1,False,True,0)
         self.password1 = gtk.Entry()
         self.password1.set_visibility(False)
