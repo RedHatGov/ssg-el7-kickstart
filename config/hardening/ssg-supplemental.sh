@@ -628,11 +628,6 @@ EOF
 # GNOME 3 Lockdowns
 ########################################
 if [ -x /bin/gsettings ]; then
-	cat << EOF > /etc/gdm/custom.conf
-[daemon]
-TimedLoginEnable=false
-AutomaticLoginEnable=false
-EOF
 	cat << EOF > /etc/dconf/db/gdm.d/99-gnome-hardening
 [org/gnome/login-screen]
 banner-message-enable=true
@@ -662,6 +657,7 @@ clock-format="12h"
 
 [org/gnome/desktop/screensaver]
 user-switch-enabled=false
+lock-enabled=true
 
 [org/gnome/desktop/session]
 idle-delay=900
@@ -671,6 +667,7 @@ disable-all=true
 
 [org/gnome/nm-applet]
 disable-wifi-create=true
+
 EOF
 	cat << EOF > /etc/dconf/db/gdm.d/locks/99-gnome-hardening
 /org/gnome/login-screen/banner-message-enable
@@ -687,6 +684,7 @@ EOF
 /org/gnome/desktop/privacy/remove-old-trash-files
 /org/gnome/desktop/privacy/old-files-age
 /org/gnome/desktop/screensaver/user-switch-enabled
+/org/gnome/desktop/screensaver/lock-enabled
 /org/gnome/desktop/session/idle-delay
 /org/gnome/desktop/thumbnailers/disable-all
 /org/gnome/nm-applet/disable-wifi-create
@@ -720,6 +718,7 @@ clock-format="12h"
 
 [org.gnome.desktop.screensaver]
 user-switch-enabled=false
+lock-enabled=true
 
 [org.gnome.desktop.session]
 idle-delay=900
@@ -729,11 +728,31 @@ disable-all=true
 
 [org.gnome.nm-applet]
 disable-wifi-create=true
+
+EOF
+
+	cat << EOF > /etc/gdm/custom.conf
+# GDM configuration storage
+[daemon]
+AutomaticLoginEnable=false
+TimedLoginEnable=false
+
+[security]
+
+[xdmcp]
+
+[greeter]
+
+[chooser]
+
+[debug]
+
 EOF
 	cp /etc/dconf/db/gdm.d/locks/99-gnome-hardening /etc/dconf/db/local.d/locks/99-gnome-hardening
  	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/
 	/bin/dconf update
 fi
+
 
 ########################################
 # Kernel - Randomize Memory Space
