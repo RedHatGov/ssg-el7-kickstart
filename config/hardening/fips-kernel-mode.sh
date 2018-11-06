@@ -17,4 +17,4 @@ rpm -q prelink && prelink -ua
 dracut -f
 BOOT="UUID=$(findmnt -no uuid /boot)"
 /sbin/grubby --update-kernel=ALL --args="boot=${BOOT} fips=1"
-/usr/bin/sed -i "s/quiet/quiet boot=${BOOT} fips=1" /etc/default/grub
+/usr/bin/sed -i "s/quiet/quiet boot=${BOOT} fips=1/" /etc/default/grub
