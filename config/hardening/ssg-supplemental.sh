@@ -23,10 +23,10 @@ cat <<EOF > /etc/pam.d/system-auth-local
 #%PAM-1.0
 auth required pam_env.so
 auth required pam_lastlog.so inactive=35
-auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_unix.so try_first_pass
-auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
+auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
@@ -56,10 +56,10 @@ cat <<EOF > /etc/pam.d/password-auth-local
 #%PAM-1.0
 auth required pam_env.so
 auth required pam_lastlog.so inactive=35
-auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_unix.so try_first_pass
-auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
+auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
@@ -323,17 +323,17 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -k access
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
--a always,exit -F path=/usr/sbin/semanage -F perm=x -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/setsebool -F perm=x -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/chcon -F perm=x -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/restorecon -F perm=x -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/userhelper -F perm=x -F key=privileged
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F key=privileged
--a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F key=privileged
+-a always,exit -F path=/sbin/semanage -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/sbin/setsebool -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/bin/chcon -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/sbin/restorecon -F perm=x -F key=privileged-priv_change
+-a always,exit -F path=/bin/userhelper -F perm=x -F key=privileged
+-a always,exit -F path=/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
+-a always,exit -F path=/bin/sudo -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
 EOF
 # Find all privileged commands and monitor them
 for fs in $(awk '($3 ~ /(ext[234])|(xfs)/) {print $2}' /proc/mounts) ; do
-	find $fs -xdev -type f \( -perm -4000 -o -perm -2000 \) | awk '{print "-a always,exit -F path=" $1 " -F perm=x -k privileged" }' >> /etc/audit/rules.d/audit.rules
+	find $fs -xdev -type f \( -perm -4000 -o -perm -2000 \) | awk '{print "-a always,exit -F path=" $1 " -F perm=x -F key=privileged" }' >> /etc/audit/rules.d/audit.rules
 done
 cat <<EOF >> /etc/audit/rules.d/audit.rules
 

@@ -575,11 +575,8 @@ class Display_Menu:
             f.write('cp /root/hardening/rhevm*.sh /root/\n')
             # Firewall Configuration
             f.write('cp /root/hardening/iptables.sh /root/\n')
-            f.write('/root/iptables.sh --kvm\n')
-            f.write('systemctl mask firewalld\n')
-            f.write('systemctl stop firewalld\n')
-            f.write('systemctl enable iptables\n')
-            f.write('systemctl start iptables\n')
+            f.write('cp /root/hardening/firewalld.sh /root/\n')
+            f.write('/root/firewalld.sh --kvm\n')
             # Runlevel Configuration
             f.write('systemctl set-default multi-user.target\n')
             f.close()
@@ -588,7 +585,6 @@ class Display_Menu:
             f.write('-firewall*\n')
             f.write('ebtables\n')
             f.write('iptables\n')
-            f.write('iptables-services\n')
             f.write('libvirt\n')
             f.write('pciutils\n')
             f.close()
@@ -676,11 +672,8 @@ class Display_Menu:
             f.write('/usr/bin/oscap xccdf eval --profile stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml  --cpe /usr/share/xml/scap/ssg/content/ssg-firefox-cpe-dictionary.xml /usr/share/xml/scap/ssg/content/ssg-firefox-xccdf.xml\n')
             # Firewall Configuration
             f.write('cp /root/hardening/iptables.sh /root/\n')
-            f.write('/root/iptables.sh --kvm\n')
-            f.write('systemctl mask firewalld\n')
-            f.write('systemctl stop firewalld\n')
-            f.write('systemctl enable iptables\n')
-            f.write('systemctl start iptables\n')
+            f.write('cp /root/hardening/firewalld.sh /root/\n')
+            f.write('/root/firewalld.sh --kvm\n')
             # Runlevel Configuration
             f.write('systemctl set-default graphical.target\n')
             f.close()
@@ -711,7 +704,6 @@ class Display_Menu:
             f.write('-NetworkManager*\n')
             f.write('ebtables\n')
             f.write('iptables\n')
-            f.write('iptables-services\n')
             f.close()
 
 
