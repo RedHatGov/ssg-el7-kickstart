@@ -148,6 +148,58 @@ echo -e "FAIL_DELAY\t4" >> /etc/login.defs
 echo -e "CREATE_HOME\tyes" >> /etc/login.defs
 
 
+####################################
+## Secured NTP Configuration
+####################################
+cat <<EOF > /etc/ntp.conf
+# by default act only as a basic NTP client
+restrict -4 default nomodify nopeer noquery notrap
+restrict -6 default nomodify nopeer noquery notrap
+# allow NTP messages from the loopback address, useful for debugging
+restrict 127.0.0.1
+restrict ::1
+# poll server at higher rate to prevent drift
+maxpoll 17
+# server(s) we time sync to
+##server 192.168.0.1
+##server 2001:DB9::1
+#server time.example.net
+server tick.usno.navy.mil
+server tock.usno.navy.mil
+EOF
+
+cat <<EOF > /etc/chrony.conf
+# Use public servers from the pool.ntp.org project.
+# Please consider joining the pool (http://www.pool.ntp.org/join.html).
+# server freeipa.local.lan iburst
+server tick.usno.navy.mil iburst
+server tock.usno.navy.mil iburst
+# Record the rate at which the system clock gains/losses time.
+driftfile /var/lib/chrony/drift
+# Allow the system clock to be stepped in the first three updates
+# if its offset is larger than 1 second.
+makestep 1.0 3
+# Enable kernel synchronization of the real-time clock (RTC).
+rtcsync
+# Enable hardware timestamping on all interfaces that support it.
+hwtimestamp *
+# Increase the minimum number of selectable sources required to adjust
+# the system clock.
+#minsources 2
+# Allow NTP client access from local network.
+#allow 192.168.0.0/16
+# Serve time even if not synchronized to a time source.
+local stratum 10
+# Specify file containing keys for NTP authentication.
+keyfile /etc/chrony.keys
+# Get TAI-UTC offset and leap seconds from the system tz database.
+leapsectz right/UTC
+# Specify directory for log files.
+logdir /var/log/chrony
+# Select which information is logged.
+#log measurements statistics tracking
+EOF
+
 ########################################
 # STIG Audit Configuration
 ########################################
@@ -349,6 +401,43 @@ cat <<EOF >> /etc/audit/rules.d/audit.rules
 -e 2
 EOF
 
+cat <<EOF >> /etc/audit/auditd.conf
+#
+# This file controls the configuration of the audit daemon
+#
+
+local_events = yes
+write_logs = yes
+log_file = /var/log/audit/audit.log
+log_group = root
+log_format = RAW
+flush = INCREMENTAL_ASYNC
+freq = 50
+max_log_file = 8
+num_logs = 5
+priority_boost = 4
+disp_qos = lossy
+dispatcher = /sbin/audispd
+name_format = NONE
+##name = mydomain
+max_log_file_action = ROTATE
+space_left = 100
+verify_email = yes
+action_mail_acct = root
+admin_space_left = 75
+disk_full_action = SUSPEND
+disk_error_action = SUSPEND
+use_libwrap = yes
+##tcp_listen_port = 60
+tcp_listen_queue = 5
+tcp_max_per_addr = 1
+##tcp_client_ports = 1024-65535
+tcp_client_max_idle = 0
+enable_krb5 = no
+krb5_principal = auditd
+##krb5_key_file = /etc/audit/audit.key
+distribute_network = no
+EOF
 
 ########################################
 # Fix cron.allow
