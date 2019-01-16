@@ -198,8 +198,6 @@ leapsectz right/UTC
 logdir /var/log/chrony
 # Select which information is logged.
 #log measurements statistics tracking
-# poll server at higher rate to prevent drift
-maxpoll 10
 EOF
 
 ########################################
