@@ -104,7 +104,7 @@ fi
 if [ ! -z $HTTP ]; then
 #### HTTPD - Recommend forwarding traffic to HTTPS 443
 ####   Recommended Article: http://www.cyberciti.biz/tips/howto-apache-force-https-secure-connections.html
-firewall-cmd --permanent --zone=public --add-service=httpd
+firewall-cmd --permanent --zone=public --add-service=http
 fi
 
 if [ ! -z $KERBEROS ]; then

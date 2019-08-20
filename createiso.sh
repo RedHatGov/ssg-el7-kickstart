@@ -3,7 +3,7 @@
 # HARDENED RHEL DVD CREATOR
 #
 # This script was written by Frank Caviggia, Red Hat Consulting
-# Last update was 23 July 2015
+# Last update was 19 August 2019
 # This script is NOT SUPPORTED by Red Hat Global Support Services.
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
@@ -21,9 +21,9 @@ function usage() {
 cat << EOF
 usage: $0 rhel-server-7.X-x86_64-dvd.iso
 
-SCAP Security Guide RHEL Kickstart RHEL 7.1+
+SCAP Security Guide RHEL Kickstart RHEL 7.4+
 
-Customizes a RHEL 7.1+ x86_64 Server or Workstation DVD to install
+Customizes a RHEL 7.4+ x86_64 Server or Workstation DVD to install
 with the following hardening:
 
   - SCAP Security Guide (SSG) for Red Hat Enterprise Linux
