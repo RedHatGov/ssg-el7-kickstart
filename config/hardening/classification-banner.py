@@ -15,8 +15,8 @@ from socket import gethostname
 
 # Check if DISPLAY variable is set
 try:
-    os.environ["DISPLAY"]
     import pygtk,gtk
+    os.environ["DISPLAY"]
 except:
     print("Error: DISPLAY environment variable not set.")
     sys.exit(1)
@@ -335,7 +335,8 @@ class Display_Banner:
                     options.esc,
                     options.opacity,
                     options.sys_info)
-                top.window.move(self.x_location, self.y_location)
+                top.window.move(self.x_location, self.y_location)		
+		#top.window.set_resizable(False)
 
             if options.show_bottom:
                 bottom = Classification_Banner(
@@ -350,6 +351,7 @@ class Display_Banner:
                     options.esc,
                     options.opacity)
                 bottom.window.move(self.x_location, int(bottom.vres))
+		bottom.window.set_resizable(False)
 
     # Relaunch the Classification Banner on Screen Resize
     def resize(self, widget, data=None):
